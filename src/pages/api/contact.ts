@@ -93,8 +93,20 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       return json({ error: 'Please enter a valid email address.' }, 400);
     }
 
-    const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_TO, SMTP_FROM_NAME, SMTP_FROM_EMAIL } =
-      process.env;
+    // Astro loads .env through Vite into import.meta.env (server-side only for
+    // unprefixed names), while hosting platforms inject real environment
+    // variables into process.env. Check both so the same code works in local
+    // dev and in the deployed function.
+    const env = (name: string): string | undefined =>
+      (import.meta.env as Record<string, string | undefined>)[name] ?? process.env[name];
+
+    const SMTP_HOST = env('SMTP_HOST');
+    const SMTP_PORT = env('SMTP_PORT');
+    const SMTP_USER = env('SMTP_USER');
+    const SMTP_PASS = env('SMTP_PASS');
+    const SMTP_TO = env('SMTP_TO');
+    const SMTP_FROM_NAME = env('SMTP_FROM_NAME');
+    const SMTP_FROM_EMAIL = env('SMTP_FROM_EMAIL');
 
     if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !SMTP_TO) {
       // Configuration problem, not a visitor problem — log loudly, and tell the
