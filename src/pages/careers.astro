@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import LeadForm from '../components/forms/LeadForm.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+---
+
+<BaseLayout
+  title="Careers | Texas Medical Billing Company"
+  description="Careers at Texas Medical Billing Company: billing, credentialing, and revenue cycle roles. Submit your information for current and future openings."
+  canonicalPath="/careers/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Careers' }])]}
+>
+  <PageHero
+    eyebrow="Careers"
+    h1="Work With Us"
+    lead="We hire people who take pride in unglamorous excellence — clean claims, worked queues, honest reporting. If that sounds like craft rather than drudgery, we'd like to meet you."
+    breadcrumbs={[{ name: 'Careers' }]}
+  />
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-2">
+      <div class="prose-site">
+        <h2>Current Openings</h2>
+        <p>
+          <!-- OWNER: replace with real openings when hiring begins. Do not list fictional roles. -->
+          Open positions will be posted here as we grow. We do not list roles we are not actively
+          hiring for — if this section is empty, the general-interest form below is the genuine path
+          in, and we do review it when positions open.
+        </p>
+        <h2>The Kind of Work</h2>
+        <p>
+          Medical billing production and analysis for Texas practices: claims workflows, denial
+          management, credentialing, payment operations, and client reporting. The work rewards
+          precision, persistence, and the satisfaction of measurable outcomes — every worked queue
+          is somebody’s practice staying healthy.
+        </p>
+        <h2>How We Evaluate</h2>
+        <p>
+          Demonstrated skill over résumé polish: payer knowledge, systems fluency, and the habits of
+          documentation and follow-through. Experience with Texas Medicaid, TRICARE, workers’ comp,
+          or specific specialty billing is valued explicitly and worth highlighting.
+        </p>
+      </div>
+
+      <div>
+        <LeadForm
+          formId="careers"
+          heading="General Interest Application"
+          submitLabel="Submit Interest"
+          successMessage="Thank you — your information is on file and we review it when relevant roles open."
+          fields={[
+            { name: 'name', label: 'Your name', type: 'text', required: true },
+            { name: 'email', label: 'Email', type: 'email', required: true },
+            { name: 'phone', label: 'Phone', type: 'tel' },
+            {
+              name: 'area',
+              label: 'Area of interest',
+              type: 'select',
+              required: true,
+              options: ['Medical billing / AR', 'Denial management & appeals', 'Credentialing', 'Payment posting', 'Client reporting & analysis', 'Other'],
+            },
+            {
+              name: 'experience',
+              label: 'Relevant experience',
+              type: 'textarea',
+              required: true,
+              placeholder: 'Systems you know, payers you’ve worked, specialties you’ve billed…',
+              hint: 'A LinkedIn URL or a note that a résumé is available works fine here too.',
+            },
+          ]}
+        />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

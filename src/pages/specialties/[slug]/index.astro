@@ -1,0 +1,157 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import FaqSection from '../../../components/FaqSection.astro';
+import CtaSection from '../../../components/CtaSection.astro';
+import RelatedLinks from '../../../components/RelatedLinks.astro';
+import { specialties, services, locations } from '../../../data';
+import { breadcrumbSchema, serviceSchema, faqSchema } from '../../../lib/schema';
+import { canonicalUrl } from '../../../lib/url';
+import { DISCLAIMER } from '../../../config/site';
+
+export function getStaticPaths() {
+  return specialties.map((specialty) => ({ params: { slug: specialty.slug }, props: { specialty } }));
+}
+
+const { specialty } = Astro.props;
+const path = `/specialties/${specialty.slug}/`;
+
+const serviceLinks = specialty.relatedServices
+  .map((slug) => services.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .map((s) => ({ title: s.title, href: `/services/${s.slug}/`, badge: 'Service' }));
+
+const specialtyLinks = specialty.relatedSpecialties
+  .map((slug) => specialties.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .map((s) => ({ title: `${s.specialtyName} Billing`, href: `/specialties/${s.slug}/`, badge: 'Specialty' }));
+
+const locationLinks = specialty.relatedLocations
+  .map((slug) => locations.find((l) => l.slug === slug))
+  .filter((l) => !!l)
+  .map((l) => ({ title: `Medical Billing in ${l.cityName}`, href: `/locations/${l.slug}/`, badge: 'Texas Location' }));
+
+const schema = [
+  breadcrumbSchema([
+    { name: 'Home', url: canonicalUrl('/') },
+    { name: 'Specialties', url: canonicalUrl('/specialties/') },
+    { name: specialty.title },
+  ]),
+  serviceSchema({
+    name: `${specialty.specialtyName} Medical Billing`,
+    description: specialty.summary,
+    url: canonicalUrl(path),
+  }),
+  faqSchema(specialty.faqs),
+];
+---
+
+<BaseLayout
+  title={specialty.seoTitle}
+  description={specialty.metaDescription}
+  canonicalPath={path}
+  noindex={!specialty.indexable}
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Specialty Billing"
+    h1={specialty.h1}
+    lead={specialty.summary}
+    breadcrumbs={[{ name: 'Specialties', href: '/specialties/' }, { name: specialty.title }]}
+    showCtas
+  />
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-3">
+      <div class="prose-site lg:col-span-2">
+        {specialty.intro.map((para) => <p class="text-lg">{para}</p>)}
+
+        <h2>Why {specialty.specialtyName} Billing Is Complex</h2>
+        {specialty.billingComplexity.map((para) => <p>{para}</p>)}
+
+        <h2>Common Service Categories We Bill</h2>
+        <ul>
+          {specialty.serviceCategories.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2>Common Denial Causes in {specialty.specialtyName}</h2>
+        <ul>
+          {specialty.denialCauses.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2>Documentation Risks to Watch</h2>
+        <ul>
+          {specialty.documentationRisks.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2>Coding Considerations</h2>
+        <ul>
+          {specialty.codingConsiderations.map((item) => <li>{item}</li>)}
+        </ul>
+        <div class="callout">
+          <p class="text-sm">
+            <strong>Educational note:</strong> Coding and payer information on this page is general
+            educational content, not definitive coding, legal, or reimbursement advice. CPT/ICD-10
+            rules and payer policies change frequently — verify specifics against current official
+            sources and qualified professionals.
+          </p>
+        </div>
+
+        <h2>Typical Payer Challenges</h2>
+        <ul>
+          {specialty.payerChallenges.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <aside class="space-y-6">
+        <div class="card">
+          <h2 class="h3">KPIs We Track for {specialty.specialtyName}</h2>
+          <ul class="mt-4 space-y-2.5">
+            {
+              specialty.kpis.map((kpi) => (
+                <li class="flex items-start gap-2 text-sm text-slate-600">
+                  <span aria-hidden="true" class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500" />
+                  {kpi}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="card bg-navy-900 text-white">
+          <p class="font-bold">Get a specialty-specific billing review</p>
+          <p class="mt-2 text-sm text-navy-200">
+            We’ll baseline your {specialty.specialtyName.toLowerCase()} billing KPIs and show you
+            where the gaps are.
+          </p>
+          <a
+            href="/free-billing-assessment/"
+            class="btn-accent mt-4 w-full"
+            data-analytics="cta_click"
+            data-cta={`specialty_${specialty.slug}`}
+          >
+            Request a Free Billing Assessment
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <FaqSection faqs={specialty.faqs} heading={`${specialty.specialtyName} Billing FAQs`} />
+
+  <RelatedLinks heading="Services for This Specialty" links={serviceLinks} alt />
+  <RelatedLinks
+    heading="Related Specialties and Texas Locations"
+    links={[...specialtyLinks.slice(0, 3), ...locationLinks.slice(0, 3)]}
+  />
+
+  <section class="section-alt py-6">
+    <div class="container-site">
+      <p class="text-xs leading-relaxed text-slate-500">{DISCLAIMER}</p>
+    </div>
+  </section>
+
+  <CtaSection
+    heading={`Talk to us about ${specialty.specialtyName.toLowerCase()} billing`}
+    ctaId={`specialty_cta_${specialty.slug}`}
+  />
+</BaseLayout>

@@ -1,0 +1,29 @@
+---
+interface Props {
+  heading?: string;
+  intro?: string;
+  steps: { title: string; description: string }[];
+  alt?: boolean;
+}
+const { heading, intro, steps, alt = false } = Astro.props;
+---
+
+<section class={`section ${alt ? 'section-alt' : ''}`}>
+  <div class="container-site">
+    {heading && <h2 class="h2">{heading}</h2>}
+    {intro && <p class="lead mt-4 max-w-3xl">{intro}</p>}
+    <ol class="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {
+        steps.map((step, i) => (
+          <li class="flex gap-4">
+            <span class="step-number" aria-hidden="true">{i + 1}</span>
+            <div>
+              <h3 class="h3">{step.title}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-slate-600">{step.description}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

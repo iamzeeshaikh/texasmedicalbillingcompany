@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import FaqSection from '../../components/FaqSection.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import RelatedLinks from '../../components/RelatedLinks.astro';
+import ReviewFlag from '../../components/ReviewFlag.astro';
+import { costPages, services } from '../../data';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+import { CTAS } from '../../config/site';
+
+export function getStaticPaths() {
+  return costPages.map((page) => ({ params: { slug: page.slug }, props: { page } }));
+}
+
+const { page } = Astro.props;
+const path = `/cost/${page.slug}/`;
+
+const serviceLinks = page.relatedServices
+  .map((slug) => services.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .map((s) => ({ title: s.title, href: `/services/${s.slug}/`, badge: 'Service' }));
+
+const costLinks = page.relatedCostPages
+  .map((slug) => costPages.find((c) => c.slug === slug))
+  .filter((c) => !!c)
+  .map((c) => ({ title: c.title, href: `/cost/${c.slug}/`, badge: 'Cost Resource' }));
+
+const schema = [
+  breadcrumbSchema([
+    { name: 'Home', url: canonicalUrl('/') },
+    { name: 'Cost Resources', url: canonicalUrl('/cost/') },
+    { name: page.title },
+  ]),
+  faqSchema(page.faqs),
+];
+---
+
+<BaseLayout
+  title={page.seoTitle}
+  description={page.metaDescription}
+  canonicalPath={path}
+  noindex={!page.indexable}
+  schema={schema}
+>
+  {page.complianceReviewRequired && <ReviewFlag topics={page.complianceTopics} note="Owner must verify pricing statements match current company pricing policy." />}
+
+  <PageHero
+    eyebrow="Cost & Pricing Resources"
+    h1={page.h1}
+    lead={page.summary}
+    breadcrumbs={[{ name: 'Cost Resources', href: '/cost/' }, { name: page.title }]}
+  />
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-3">
+      <div class="prose-site lg:col-span-2">
+        {page.intro.map((para) => <p class="text-lg">{para}</p>)}
+
+        {
+          page.sections.map((section) => (
+            <>
+              <h2>{section.heading}</h2>
+              {section.body.map((para) => <p>{para}</p>)}
+              {section.bullets && (
+                <ul>
+                  {section.bullets.map((item) => <li>{item}</li>)}
+                </ul>
+              )}
+            </>
+          ))
+        }
+
+        <div class="callout">
+          <p class="text-sm">
+            <strong>Pricing note:</strong> Ranges discussed on this page are industry observations
+            for educational context — not guaranteed market rates and not our quoted prices. Actual
+            pricing for your practice depends on the factors listed here and comes from your real
+            numbers.
+          </p>
+        </div>
+      </div>
+
+      <aside class="space-y-6">
+        <div class="card">
+          <h2 class="h3">What Determines Your Price</h2>
+          <ul class="mt-4 space-y-2.5">
+            {
+              page.pricingFactors.map((factor) => (
+                <li class="flex items-start gap-2 text-sm text-slate-600">
+                  <span aria-hidden="true" class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500" />
+                  {factor}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="card bg-navy-900 text-white">
+          <p class="font-bold">Want a real number instead of ranges?</p>
+          <p class="mt-2 text-sm text-navy-200">
+            Send your volume and specialty through the pricing inquiry — we quote from your data and
+            explain the drivers.
+          </p>
+          <a href={CTAS.pricing.href} class="btn-accent mt-4 w-full" data-analytics="cta_click" data-cta={`cost_${page.slug}`}>
+            {CTAS.pricing.label}
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <FaqSection faqs={page.faqs} />
+
+  <RelatedLinks
+    heading="Related Services and Cost Resources"
+    links={[...serviceLinks.slice(0, 3), ...costLinks.slice(0, 3)]}
+    alt
+  />
+
+  <CtaSection
+    heading="Get pricing built from your practice’s numbers"
+    primary={CTAS.pricing}
+    ctaId={`cost_cta_${page.slug}`}
+  />
+</BaseLayout>

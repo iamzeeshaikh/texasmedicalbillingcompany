@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import FaqSection from '../../components/FaqSection.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import RelatedLinks from '../../components/RelatedLinks.astro';
+import ProcessSteps from '../../components/ProcessSteps.astro';
+import ReviewFlag from '../../components/ReviewFlag.astro';
+import { services, specialties, solutions } from '../../data';
+import { breadcrumbSchema, serviceSchema, faqSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+import { CTAS } from '../../config/site';
+
+export function getStaticPaths() {
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+
+const { service } = Astro.props;
+const path = `/services/${service.slug}/`;
+
+const relatedServiceLinks = service.relatedServices
+  .map((slug) => services.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .map((s) => ({ title: s.title, href: `/services/${s.slug}/`, description: s.summary.slice(0, 120) + '…', badge: 'Service' }));
+
+const relatedSpecialtyLinks = service.relatedSpecialties
+  .map((slug) => specialties.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .map((s) => ({ title: `${s.specialtyName} Billing`, href: `/specialties/${s.slug}/`, badge: 'Specialty' }));
+
+const relatedSolutionLinks = service.relatedSolutions
+  .map((slug) => solutions.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .map((s) => ({ title: s.title, href: `/solutions/${s.slug}/`, badge: 'Problem We Solve' }));
+
+const schema = [
+  breadcrumbSchema([
+    { name: 'Home', url: canonicalUrl('/') },
+    { name: 'Services', url: canonicalUrl('/services/') },
+    { name: service.title },
+  ]),
+  serviceSchema({ name: service.title, description: service.summary, url: canonicalUrl(path) }),
+  faqSchema(service.faqs),
+];
+---
+
+<BaseLayout
+  title={service.seoTitle}
+  description={service.metaDescription}
+  canonicalPath={path}
+  noindex={!service.indexable}
+  schema={schema}
+>
+  {service.complianceReviewRequired && <ReviewFlag topics={service.complianceTopics} />}
+
+  <PageHero
+    eyebrow="Medical Billing Services"
+    h1={service.h1}
+    lead={service.summary}
+    breadcrumbs={[{ name: 'Services', href: '/services/' }, { name: service.title }]}
+    showCtas
+  />
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-3">
+      <div class="prose-site lg:col-span-2">
+        {service.intro.map((para) => <p class="text-lg">{para}</p>)}
+
+        <h2>Problems This Service Addresses</h2>
+        <ul>
+          {service.problemsAddressed.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2>What’s Included</h2>
+        <ul>
+          {service.included.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2>Who This Service Is For</h2>
+        <ul>
+          {service.suitableFor.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2>Risks and Operational Considerations</h2>
+        {service.considerations.map((item) => <p>{item}</p>)}
+      </div>
+
+      <aside class="space-y-6">
+        <div class="card">
+          <h2 class="h3">Metrics That Matter</h2>
+          <dl class="mt-4 space-y-4">
+            {
+              service.metrics.map((metric) => (
+                <div>
+                  <dt class="font-semibold text-navy-900">{metric.name}</dt>
+                  <dd class="mt-1 text-sm leading-relaxed text-slate-600">{metric.description}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+        <div class="card bg-navy-900 text-white">
+          <p class="font-bold">Not sure where your billing stands?</p>
+          <p class="mt-2 text-sm text-navy-200">
+            Start with a free assessment — your KPIs, your gaps, no obligation.
+          </p>
+          <a href={CTAS.primary.href} class="btn-accent mt-4 w-full" data-analytics="cta_click" data-cta="service_sidebar">
+            {CTAS.primary.label}
+          </a>
+        </div>
+        <div class="card">
+          <p class="text-sm font-semibold text-navy-900">Related pricing resource</p>
+          <a href="/cost/medical-billing-cost/" class="mt-2 block text-sm text-teal-700 underline">
+            What does medical billing cost? →
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <ProcessSteps
+    heading={`How Our ${service.title} Process Works`}
+    steps={service.processSteps}
+    alt
+  />
+
+  <FaqSection faqs={service.faqs} heading={`${service.title}: Frequently Asked Questions`} />
+
+  {relatedSpecialtyLinks.length > 0 && (
+    <RelatedLinks heading="Specialties We Support With This Service" links={relatedSpecialtyLinks} alt />
+  )}
+
+  <RelatedLinks
+    heading="Related Services and Resources"
+    links={[...relatedServiceLinks.slice(0, 3), ...relatedSolutionLinks.slice(0, 3)]}
+  />
+
+  <CtaSection
+    heading={`Ready to talk about ${service.title.toLowerCase()}?`}
+    ctaId={`service_${service.slug}`}
+  />
+</BaseLayout>

@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import { costPages } from '../../data';
+import { breadcrumbSchema, itemListSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+import { CTAS } from '../../config/site';
+
+const schema = [
+  breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Cost Resources' }]),
+  itemListSchema(costPages.map((c) => ({ name: c.title, url: canonicalUrl(`/cost/${c.slug}/`) }))),
+];
+---
+
+<BaseLayout
+  title="Medical Billing Cost & Pricing Resources | Honest Numbers"
+  description="What billing, coding, credentialing, and RCM services actually cost: pricing models, ranges, and comparison frameworks — without the sales fog."
+  canonicalPath="/cost/"
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Cost Resources"
+    h1="Medical Billing Cost and Pricing Resources"
+    lead="Pricing in this industry hides behind 'call us' buttons. These resources explain how billing services are actually priced — models, observed ranges, and the factors that move your number."
+    breadcrumbs={[{ name: 'Cost Resources' }]}
+  />
+
+  <section class="section">
+    <div class="container-site">
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          costPages.map((page) => (
+            <a href={`/cost/${page.slug}/`} class="card-link">
+              {page.featured && <span class="badge-teal mb-3">Start Here</span>}
+              <p class="font-semibold text-navy-900">{page.title}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                {page.summary.length > 130 ? page.summary.slice(0, 130) + '…' : page.summary}
+              </p>
+              <p class="mt-3 text-sm font-semibold text-teal-700">Read the breakdown →</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaSection
+    heading="Skip the ranges — get your number"
+    body="Pricing depends on specialty, volume, collections, scope, AR condition, providers, locations, payer mix, software, and reporting needs. Send yours; get a real quote."
+    primary={CTAS.pricing}
+    ctaId="cost_hub"
+  />
+</BaseLayout>

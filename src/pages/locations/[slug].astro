@@ -1,0 +1,159 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import FaqSection from '../../components/FaqSection.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import RelatedLinks from '../../components/RelatedLinks.astro';
+import ProcessSteps from '../../components/ProcessSteps.astro';
+import { locations, specialties } from '../../data';
+import { breadcrumbSchema, serviceSchema, faqSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+
+export function getStaticPaths() {
+  return locations.map((location) => ({ params: { slug: location.slug }, props: { location } }));
+}
+
+const { location } = Astro.props;
+const path = `/locations/${location.slug}/`;
+
+const specialtyLinks = location.relatedSpecialties
+  .map((slug) => specialties.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .map((s) => ({ title: `${s.specialtyName} Billing`, href: `/specialties/${s.slug}/`, badge: 'Specialty' }));
+
+const nearbyLinks = location.nearbyLocations
+  .map((slug) => locations.find((l) => l.slug === slug))
+  .filter((l) => !!l)
+  .map((l) => ({ title: `Medical Billing in ${l.cityName}`, href: `/locations/${l.slug}/`, badge: 'Nearby' }));
+
+const onboardingSteps = [
+  {
+    title: 'Remote assessment',
+    description: `We review your ${location.cityName} practice’s billing data and workflows remotely — no site visit required, no disruption to your day.`,
+  },
+  {
+    title: 'Secure system access',
+    description: 'Role-based access to your existing practice management system under a signed BAA, with every action traceable in your own audit logs.',
+  },
+  {
+    title: 'Workflow transition',
+    description: 'A dated cutover plan defines who owns what from day one — current claims, existing AR, and escalation paths all assigned in writing.',
+  },
+  {
+    title: 'Ongoing production and reporting',
+    description: 'Daily claim work you can watch in your own system, plus monthly performance reporting in plain language.',
+  },
+];
+
+const schema = [
+  breadcrumbSchema([
+    { name: 'Home', url: canonicalUrl('/') },
+    { name: 'Locations', url: canonicalUrl('/locations/') },
+    { name: location.cityName },
+  ]),
+  // Service schema (areaServed) — NOT LocalBusiness: we do not claim a
+  // physical office in this city.
+  serviceSchema({
+    name: `Medical Billing Services — ${location.cityName}`,
+    description: location.summary,
+    url: canonicalUrl(path),
+  }),
+  faqSchema(location.faqs),
+];
+---
+
+<BaseLayout
+  title={location.seoTitle}
+  description={location.metaDescription}
+  canonicalPath={path}
+  noindex={!location.indexable}
+  schema={schema}
+>
+  <PageHero
+    eyebrow={`${location.region} · Texas`}
+    h1={location.h1}
+    lead={location.summary}
+    breadcrumbs={[{ name: 'Locations', href: '/locations/' }, { name: location.cityName }]}
+    showCtas
+  />
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-3">
+      <div class="prose-site lg:col-span-2">
+        {location.intro.map((para) => <p class="text-lg">{para}</p>)}
+
+        <div class="alert-info my-6">
+          Serving practices in {location.cityName} and surrounding Texas communities through secure
+          remote medical billing workflows. We do not operate a physical office in {location.cityName}
+          — and we will never pretend otherwise.
+        </div>
+
+        <h2>The {location.cityName} Healthcare Market</h2>
+        {location.marketContext.map((para) => <p>{para}</p>)}
+
+        <h2>Common Billing Challenges for {location.cityName} Practices</h2>
+        <ul>
+          {location.challenges.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2>Surrounding Communities We Serve</h2>
+        <p>
+          Practices throughout the {location.cityName} area work with us, including{' '}
+          {location.surroundingAreas.join(', ')}.
+        </p>
+      </div>
+
+      <aside class="space-y-6">
+        <div class="card">
+          <h2 class="h3">Practice Types We Support in {location.cityName}</h2>
+          <ul class="mt-4 space-y-2.5">
+            {
+              location.practiceTypes.map((type) => (
+                <li class="flex items-start gap-2 text-sm text-slate-600">
+                  <span aria-hidden="true" class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500" />
+                  {type}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="card bg-navy-900 text-white">
+          <p class="font-bold">{location.cityName} practice? Start here.</p>
+          <p class="mt-2 text-sm text-navy-200">
+            A free billing assessment shows your KPIs against benchmarks — remote, fast, no obligation.
+          </p>
+          <a
+            href="/free-billing-assessment/"
+            class="btn-accent mt-4 w-full"
+            data-analytics="cta_click"
+            data-cta={`location_${location.slug}`}
+          >
+            Request a Free Billing Assessment
+          </a>
+        </div>
+        <div class="card">
+          <p class="text-sm font-semibold text-navy-900">All services available remotely</p>
+          <a href="/services/" class="mt-2 block text-sm text-teal-700 underline">
+            Explore medical billing services →
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <ProcessSteps
+    heading={`How Remote Onboarding Works for ${location.cityName} Practices`}
+    steps={onboardingSteps}
+    alt
+  />
+
+  <FaqSection faqs={location.faqs} heading={`${location.cityName} Medical Billing FAQs`} />
+
+  <RelatedLinks heading={`Specialties We Support in ${location.cityName}`} links={specialtyLinks} alt />
+  {nearbyLinks.length > 0 && <RelatedLinks heading="Nearby Texas Locations" links={nearbyLinks} />}
+
+  <CtaSection
+    heading={`Ready to strengthen your ${location.cityName} practice’s billing?`}
+    ctaId={`location_cta_${location.slug}`}
+  />
+</BaseLayout>

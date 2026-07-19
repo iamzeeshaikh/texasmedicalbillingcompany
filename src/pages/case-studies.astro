@@ -1,0 +1,53 @@
+---
+/**
+ * Future-ready case studies page. HONESTY RULE: no fictional case studies,
+ * ever. This page stays excluded from main navigation until real,
+ * client-approved case studies exist (see COMPLIANCE-REVIEW.md).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaSection from '../components/CtaSection.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+---
+
+<BaseLayout
+  title="Case Studies | Texas Medical Billing Company"
+  description="Client case studies will be published here with client approval — real results with real methodology, or nothing at all."
+  canonicalPath="/case-studies/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Case Studies' }])]}
+>
+  <PageHero
+    eyebrow="Case Studies"
+    h1="Case Studies: Coming With Client Approval"
+    lead="This page will hold real client stories — with real numbers, methodology shown, and written client consent. Until those exist, it holds this promise instead."
+    breadcrumbs={[{ name: 'Case Studies' }]}
+  />
+
+  <section class="section">
+    <div class="container-narrow prose-site">
+      <h2>Why This Page Is Honest About Being Empty</h2>
+      <p>
+        The billing industry is full of case studies that cannot be verified: anonymous practices,
+        suspiciously round improvements, and results with no methodology. We would rather publish
+        nothing than join them. As a newer firm, our client results are accumulating — and when we
+        publish them, each case study will include the practice context, the baseline KPIs, what we
+        actually did, the measured movement, and the client’s written approval.
+      </p>
+      <h2>What You Can Evaluate Today</h2>
+      <p>
+        Judge us the way this site invites throughout: through the
+        <a href="/free-billing-assessment/">free assessment</a> (real analysis of your data),
+        our <a href="/our-process/">documented process</a>, the depth of our
+        <a href="/guides/">educational content</a>, and reference conversations we can arrange with
+        consenting clients during serious evaluations.
+      </p>
+    </div>
+  </section>
+
+  <CtaSection
+    heading="Be a result worth writing about"
+    body="Every future case study starts as a practice that decided to measure. Start with the assessment."
+    ctaId="case_studies_cta"
+  />
+</BaseLayout>

@@ -1,0 +1,43 @@
+---
+/**
+ * Text-based logo. Replace the inner markup with a custom SVG when a
+ * final logo is produced (keep the accessible name identical).
+ * `variant="compact"` renders the monogram used in the footer / small spaces.
+ */
+interface Props {
+  variant?: 'horizontal' | 'compact';
+  onDark?: boolean;
+  class?: string;
+}
+const { variant = 'horizontal', onDark = false, class: className = '' } = Astro.props;
+const nameColor = onDark ? 'text-white' : 'text-navy-900';
+const subColor = onDark ? 'text-navy-200' : 'text-teal-700';
+---
+
+{
+  variant === 'horizontal' ? (
+    <span class={`inline-flex items-center gap-2.5 ${className}`}>
+      <span
+        aria-hidden="true"
+        class="flex h-9 w-9 items-center justify-center rounded-md bg-navy-800 text-sm font-bold tracking-tight text-white"
+      >
+        TX
+      </span>
+      <span class="flex flex-col leading-tight">
+        <span class={`text-[0.95rem] font-bold tracking-tight ${nameColor}`}>
+          Texas Medical Billing Company
+        </span>
+        <span class={`text-[0.65rem] font-medium uppercase tracking-[0.14em] ${subColor}`}>
+          Revenue Cycle Support
+        </span>
+      </span>
+    </span>
+  ) : (
+    <span
+      aria-hidden="true"
+      class={`flex h-9 w-9 items-center justify-center rounded-md bg-navy-800 text-sm font-bold tracking-tight text-white ${className}`}
+    >
+      TX
+    </span>
+  )
+}

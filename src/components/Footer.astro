@@ -1,0 +1,193 @@
+---
+import Logo from './Logo.astro';
+import { SITE, CONTACT, CTAS, DISCLAIMER, SOCIAL } from '../config/site';
+
+const year = new Date().getFullYear();
+
+const columns = [
+  {
+    heading: 'Services',
+    links: [
+      { label: 'Medical Billing', href: '/services/medical-billing/' },
+      { label: 'Revenue Cycle Management', href: '/services/revenue-cycle-management/' },
+      { label: 'Medical Coding', href: '/services/medical-coding/' },
+      { label: 'Credentialing', href: '/services/credentialing/' },
+      { label: 'Denial Management', href: '/services/denial-management/' },
+      { label: 'AR Follow-Up', href: '/services/accounts-receivable-follow-up/' },
+      { label: 'All Services', href: '/services/' },
+    ],
+  },
+  {
+    heading: 'Specialties',
+    links: [
+      { label: 'Cardiology', href: '/specialties/cardiology-medical-billing/' },
+      { label: 'Orthopedics', href: '/specialties/orthopedic-medical-billing/' },
+      { label: 'Behavioral Health', href: '/specialties/behavioral-health-billing/' },
+      { label: 'Family Medicine', href: '/specialties/family-medicine-medical-billing/' },
+      { label: 'Pain Management', href: '/specialties/pain-management-billing/' },
+      { label: 'Urgent Care', href: '/specialties/urgent-care-billing/' },
+      { label: 'All Specialties', href: '/specialties/' },
+    ],
+  },
+  {
+    heading: 'Texas Locations',
+    links: [
+      { label: 'Houston', href: '/locations/houston-medical-billing/' },
+      { label: 'Dallas', href: '/locations/dallas-medical-billing/' },
+      { label: 'Austin', href: '/locations/austin-medical-billing/' },
+      { label: 'San Antonio', href: '/locations/san-antonio-medical-billing/' },
+      { label: 'Fort Worth', href: '/locations/fort-worth-medical-billing/' },
+      { label: 'El Paso', href: '/locations/el-paso-medical-billing/' },
+      { label: 'All Locations', href: '/locations/' },
+    ],
+  },
+  {
+    heading: 'Resources',
+    links: [
+      { label: 'Knowledge Center', href: '/guides/' },
+      { label: 'Blog & Insights', href: '/blog/' },
+      { label: 'Billing Problems We Solve', href: '/solutions/' },
+      { label: 'Cost Resources', href: '/cost/' },
+      { label: 'Comparisons', href: '/compare/' },
+      { label: 'Payer Resources', href: '/payers/' },
+      { label: 'Software Support', href: '/software/' },
+    ],
+  },
+  {
+    heading: 'Company',
+    links: [
+      { label: 'About Us', href: '/about/' },
+      { label: 'Why Choose Us', href: '/why-us/' },
+      { label: 'Our Process', href: '/our-process/' },
+      { label: 'HIPAA & Security', href: '/hipaa-and-security/' },
+      { label: 'Pricing', href: '/pricing/' },
+      { label: 'Careers', href: '/careers/' },
+      { label: 'Contact', href: '/contact/' },
+    ],
+  },
+];
+
+const socialLinks = [
+  { label: 'LinkedIn', href: SOCIAL.linkedin },
+  { label: 'Facebook', href: SOCIAL.facebook },
+  { label: 'X (Twitter)', href: SOCIAL.twitter },
+].filter((s) => s.href);
+---
+
+<footer class="border-t border-navy-800 bg-navy-950 text-navy-200">
+  <!-- CTA band -->
+  <div class="border-b border-navy-800 bg-navy-900">
+    <div class="container-site flex flex-col items-center gap-5 py-10 text-center md:flex-row md:justify-between md:text-left">
+      <div>
+        <p class="text-xl font-bold text-white">Ready to review your billing workflow?</p>
+        <p class="mt-1 text-sm text-navy-300">
+          Get a no-obligation look at your claims, denials, and accounts receivable process.
+        </p>
+      </div>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href={CTAS.primary.href} class="btn-accent" data-analytics="cta_click" data-cta="footer_primary">
+          {CTAS.primary.label}
+        </a>
+        <a href={CTAS.secondary.href} class="btn-ghost-light">{CTAS.secondary.label}</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-site py-12">
+    <div class="grid gap-10 lg:grid-cols-6">
+      <div class="lg:col-span-1">
+        <a href="/" aria-label="Texas Medical Billing Company — Home">
+          <Logo onDark />
+        </a>
+        <p class="mt-4 text-sm leading-relaxed text-navy-300">
+          Medical billing and revenue cycle support for physicians, clinics, and group practices
+          across Texas.
+        </p>
+        {
+          CONTACT.serviceArea && (
+            <p class="mt-4 text-sm not-italic text-navy-300">
+              <span class="block font-semibold text-navy-100">{SITE.name}</span>
+              <span class="block">
+                {CONTACT.serviceArea.city}, {CONTACT.serviceArea.state},{' '}
+                {CONTACT.serviceArea.country}
+              </span>
+              <span class="block">{CONTACT.serviceArea.note}</span>
+            </p>
+          )
+        }
+        {
+          !CONTACT.isPlaceholder && CONTACT.phoneDisplay && (
+            <p class="mt-4 text-sm">
+              <a href={`tel:${CONTACT.phone}`} class="hover:text-white" data-analytics="phone_click">
+                {CONTACT.phoneDisplay}
+              </a>
+            </p>
+          )
+        }
+        {
+          CONTACT.email && (
+            <p class="mt-2 text-sm">
+              <a href={`mailto:${CONTACT.email}`} class="hover:text-white" data-analytics="email_click">
+                {CONTACT.email}
+              </a>
+            </p>
+          )
+        }
+        <p class="mt-2 text-xs text-navy-400">{CONTACT.hours}</p>
+        <p class="mt-3 text-xs leading-relaxed text-navy-400">
+          {SITE.name} provides remote medical billing and revenue cycle support to healthcare
+          practices across Texas. Our {CONTACT.serviceArea.city} location currently serves as our
+          primary service-area listing.{' '}
+          {CONTACT.serviceArea.appointmentOnly && 'Meetings are available by appointment only.'}
+        </p>
+        {
+          socialLinks.length > 0 && (
+            <ul class="mt-4 flex gap-3">
+              {socialLinks.map((s) => (
+                <li>
+                  <a href={s.href} class="text-xs text-navy-300 hover:text-white" rel="noopener">
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+
+      {
+        columns.map((col) => (
+          <nav aria-label={`Footer: ${col.heading}`}>
+            <p class="text-xs font-semibold uppercase tracking-widest text-navy-400">{col.heading}</p>
+            <ul class="mt-3.5 space-y-2">
+              {col.links.map((link) => (
+                <li>
+                  <a href={link.href} class="text-sm text-navy-200 hover:text-white hover:underline">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+
+    <div class="mt-12 border-t border-navy-800 pt-6">
+      <p class="text-xs leading-relaxed text-navy-400">{DISCLAIMER}</p>
+      <div class="mt-4 flex flex-col items-start justify-between gap-3 md:flex-row md:items-center">
+        <p class="text-xs text-navy-400">
+          © {year} {SITE.name}. All rights reserved.
+        </p>
+        <ul class="flex flex-wrap gap-x-5 gap-y-1 text-xs">
+          <li><a href="/privacy-policy/" class="text-navy-300 hover:text-white">Privacy Policy</a></li>
+          <li><a href="/terms/" class="text-navy-300 hover:text-white">Terms &amp; Conditions</a></li>
+          <li><a href="/accessibility/" class="text-navy-300 hover:text-white">Accessibility</a></li>
+          <li><a href="/cookie-policy/" class="text-navy-300 hover:text-white">Cookie Policy</a></li>
+          <li><a href="/editorial-policy/" class="text-navy-300 hover:text-white">Editorial Policy</a></li>
+          <li><a href="/sitemap/" class="text-navy-300 hover:text-white">Sitemap</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>

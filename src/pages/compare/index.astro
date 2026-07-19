@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import { comparisons } from '../../data';
+import { breadcrumbSchema, itemListSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+
+const schema = [
+  breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Comparisons' }]),
+  itemListSchema(comparisons.map((c) => ({ name: c.h1, url: canonicalUrl(`/compare/${c.slug}/`) }))),
+];
+---
+
+<BaseLayout
+  title="Medical Billing Comparisons | Honest Decision Guides"
+  description="In-house vs outsourced, billing vs RCM, pricing models, vendor sizes — 11 honest comparison guides for practice billing decisions."
+  canonicalPath="/compare/"
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Comparisons"
+    h1="Billing Decisions, Compared Honestly"
+    lead="Every comparison here names the cases where each option wins — including the options we don't sell. Decision frameworks, trade-off tables, and disclosed perspective."
+    breadcrumbs={[{ name: 'Comparisons' }]}
+  />
+
+  <section class="section">
+    <div class="container-site">
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          comparisons.map((comparison) => (
+            <a href={`/compare/${comparison.slug}/`} class="card-link">
+              {comparison.featured && <span class="badge-teal mb-3">Most Read</span>}
+              <p class="font-semibold text-navy-900">{comparison.h1}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                {comparison.summary.length > 130 ? comparison.summary.slice(0, 130) + '…' : comparison.summary}
+              </p>
+              <p class="mt-3 text-sm font-semibold text-teal-700">Compare options →</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaSection
+    heading="Decisions are easier with your own data"
+    ctaId="compare_hub"
+  />
+</BaseLayout>

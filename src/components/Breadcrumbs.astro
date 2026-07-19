@@ -1,0 +1,31 @@
+---
+/**
+ * Visible breadcrumb trail. Pair with breadcrumbSchema() in the page's
+ * schema prop (the JSON-LD lives in the page @graph, not here).
+ */
+interface Props {
+  items: { name: string; href?: string }[];
+  onDark?: boolean;
+}
+const { items, onDark = false } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb">
+  <ol class={`breadcrumbs ${onDark ? 'text-navy-300' : ''}`}>
+    <li><a href="/" class={onDark ? 'hover:text-white' : ''}>Home</a></li>
+    {
+      items.map((item, i) => (
+        <li class="flex items-center gap-1.5">
+          <span aria-hidden="true" class={onDark ? 'text-navy-500' : 'text-slate-300'}>/</span>
+          {item.href && i < items.length - 1 ? (
+            <a href={item.href} class={onDark ? 'hover:text-white' : ''}>{item.name}</a>
+          ) : (
+            <span aria-current="page" class={onDark ? 'text-navy-100' : 'text-navy-800 font-medium'}>
+              {item.name}
+            </span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import ReviewFlag from '../components/ReviewFlag.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+import { SITE, CONTACT } from '../config/site';
+---
+
+<BaseLayout
+  title="Privacy Policy | Texas Medical Billing Company"
+  description="Privacy policy for texasmedicalbillingcompany.com: what information we collect through this website, how we use it, and your choices."
+  canonicalPath="/privacy-policy/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Privacy Policy' }])]}
+>
+  <ReviewFlag topics={['legal']} note="Legal counsel must review this policy before launch and confirm it reflects actual data practices." />
+
+  <PageHero h1="Privacy Policy" breadcrumbs={[{ name: 'Privacy Policy' }]} />
+
+  <section class="section">
+    <div class="container-narrow prose-site">
+      <p class="text-sm text-slate-500">Last updated: July 19, 2026</p>
+
+      <h2>Scope of This Policy</h2>
+      <p>
+        This policy describes how {SITE.name} (“we,” “us”) handles information collected through
+        this website, {SITE.domain}. It does not describe how we handle protected health
+        information (PHI) received in our role as a business associate to healthcare clients — that
+        handling is governed by HIPAA and by Business Associate Agreements with each client, as
+        described on our <a href="/hipaa-and-security/">HIPAA and Security page</a>.
+      </p>
+      <div class="alert-warning my-6 text-sm">
+        <strong>Do not submit patient information through this website.</strong> Our forms are for
+        business inquiries only. Any patient names, medical records, insurance details, or other
+        protected health information submitted through website forms will be deleted upon
+        identification.
+      </div>
+
+      <h2>Information We Collect</h2>
+      <p>
+        <strong>Information you provide:</strong> when you submit a form (contact, assessment,
+        pricing, consultation, careers), we collect the business information you enter — your name,
+        role, practice name, work contact details, and message content.
+      </p>
+      <p>
+        <strong>Information collected automatically:</strong> where analytics tools are enabled, we
+        collect standard usage data — pages viewed, referring sources, approximate location, device
+        and browser characteristics — as described in our <a href="/cookie-policy/">Cookie Policy</a>.
+        Analytics is configured with privacy-conscious settings, including IP anonymization where
+        supported.
+      </p>
+
+      <h2>How We Use Information</h2>
+      <ul>
+        <li>Responding to your inquiries and providing requested information or services</li>
+        <li>Operating, securing, and improving this website</li>
+        <li>Understanding aggregate site usage through analytics</li>
+        <li>Meeting legal, security, and record-keeping obligations</li>
+      </ul>
+      <p>We do not sell personal information collected through this website.</p>
+
+      <h2>Sharing</h2>
+      <p>
+        Information may be processed by service providers who support this website’s operation
+        (hosting, form processing, analytics, email) under appropriate agreements, and may be
+        disclosed where required by law or to protect rights and security. We do not share form
+        submissions with unrelated third parties for their marketing.
+      </p>
+
+      <h2>Retention</h2>
+      <p>
+        Business inquiry information is retained as long as needed for the purposes above and for
+        reasonable business records, then deleted or anonymized.
+      </p>
+
+      <h2>Your Choices and Rights</h2>
+      <p>
+        You may request access to, correction of, or deletion of the information you submitted
+        through this website by contacting us at{' '}
+        <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>. Depending on your jurisdiction, you
+        may have additional rights under applicable privacy laws; we will honor valid requests as
+        the law requires.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Privacy questions: <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>.
+        <!-- OWNER: add mailing address for privacy requests when business address exists. -->
+      </p>
+    </div>
+  </section>
+</BaseLayout>

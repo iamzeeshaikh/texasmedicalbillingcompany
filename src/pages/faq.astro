@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaSection from '../components/CtaSection.astro';
+import FaqSection from '../components/FaqSection.astro';
+import { breadcrumbSchema, faqSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+
+const groups = [
+  {
+    heading: 'Getting Started',
+    faqs: [
+      {
+        question: 'What happens in the free billing assessment?',
+        answer:
+          'You provide standard reports from your practice management system (we send the exact list) and complete a short workflow questionnaire. We compute your baseline KPIs — denial rate by category, days in AR, clean claim rate, net collection rate — and deliver written findings with gaps named and sized. The findings are yours regardless of whether you engage us.',
+      },
+      {
+        question: 'How long does onboarding take?',
+        answer:
+          'Most single-specialty practices reach full production in two to four weeks: BAA and access setup, workflow documentation, backlog triage, and a verified ramp. Multi-provider groups run longer; every timeline is committed in writing at scoping.',
+      },
+      {
+        question: 'Do we have to switch software?',
+        answer:
+          'No. We work inside your existing, client-authorized system wherever platform access rules allow — your data, your history, and your reporting stay under your control, with our work visible in your own queues.',
+      },
+      {
+        question: 'What size practices do you work with?',
+        answer:
+          'From solo physicians to multi-location groups. Scope and pricing are sized to the practice — a solo practice does not pay for enterprise ceremony, and a group gets the per-provider and per-site structure it needs.',
+      },
+    ],
+  },
+  {
+    heading: 'Pricing and Contracts',
+    faqs: [
+      {
+        question: 'How do you charge?',
+        answer:
+          'Typically a percentage of collections, with flat-fee and project pricing where they fit better. The percentage depends on specialty, volume, collections, scope, AR condition, providers, locations, payer mix, and software environment — we quote from your actual numbers and explain the drivers. Our cost resources explain how industry pricing works generally.',
+      },
+      {
+        question: 'Are there long-term contracts or exit penalties?',
+        answer:
+          'Our agreements define an orderly exit: a notice period, transition support, and your data remaining yours — including workflow documentation we created. We believe retention should be earned monthly through results.',
+      },
+      {
+        question: 'What counts as "collections" in percentage pricing?',
+        answer:
+          'The contract defines it explicitly with examples — which payment types are included, how patient payments are treated, and how pre-engagement claims are handled. Ambiguity in this definition is the classic percentage-model dispute, so we eliminate it in writing.',
+      },
+    ],
+  },
+  {
+    heading: 'Operations',
+    faqs: [
+      {
+        question: 'Who exactly works our account?',
+        answer:
+          'Named account leadership answers for your practice, with production running through documented functional workflows. You are told who is accountable at engagement start, and the two-week-vacation question — what happens when someone is out — has a designed answer: coverage continues, because knowledge lives in systems, not just heads.',
+      },
+      {
+        question: 'What are your turnaround standards?',
+        answer:
+          'Charges entered same or next business day from available documentation; claims submitted daily; clearinghouse rejections reworked on same-week standards; denials triaged by deadline and value on defined cadences. Standards are written into the scope and reported against.',
+      },
+      {
+        question: 'How do you handle our existing AR and denial backlog?',
+        answer:
+          'As defined projects with honest triage: backlogs are inventoried claim by claim, classified by recoverability and deadline, worked in deadline order, and closed with documentation where recovery rights have expired. Nobody can honestly quote a recovery percentage before triage — including us.',
+      },
+      {
+        question: 'Do you handle patient billing calls?',
+        answer:
+          'Where scoped, yes — patient statements, inquiry handling, and payment plans per your policies, with the tone your practice’s reputation deserves. Collection policy decisions (plans, discounts, external collections) remain yours; we execute them consistently.',
+      },
+    ],
+  },
+  {
+    heading: 'Security and Compliance',
+    faqs: [
+      {
+        question: 'Is our data safe with a remote team?',
+        answer:
+          'The framework is specific: named individual logins, role-based minimum-necessary access, executed BAAs before any PHI access, managed devices under documented policies, and your system’s audit trails covering everything. Our HIPAA and security page details it — and your compliance reviewer is welcome to interrogate it.',
+      },
+      {
+        question: 'Are you "HIPAA certified"?',
+        answer:
+          'No one legitimately is — HIPAA provides no government certification for billing companies, and badges claiming otherwise are marketing. What exists is compliance: implemented safeguards, documentation, and contractual commitment, which is what we provide and can evidence.',
+      },
+      {
+        question: 'Where is your team located?',
+        answer:
+          'We answer that directly during scoping — which functions are performed where, under what security controls and oversight. Practices with US-only requirements should state them; we will scope accordingly or say honestly that we cannot.',
+      },
+    ],
+  },
+];
+
+const allFaqs = groups.flatMap((g) => g.faqs);
+---
+
+<BaseLayout
+  title="Frequently Asked Questions | Texas Medical Billing Company"
+  description="Answers about our billing services: pricing, onboarding, turnaround standards, security, backlog handling, and contracts — asked and answered plainly."
+  canonicalPath="/faq/"
+  schema={[
+    breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'FAQ' }]),
+    faqSchema(allFaqs),
+  ]}
+>
+  <PageHero
+    eyebrow="FAQ"
+    h1="Frequently Asked Questions"
+    lead="Direct answers to the questions practices actually ask — about money, operations, security, and what happens when things go wrong."
+    breadcrumbs={[{ name: 'FAQ' }]}
+  />
+
+  {groups.map((group) => <FaqSection faqs={group.faqs} heading={group.heading} headingLevel="h2" />)}
+
+  <CtaSection
+    heading="Question not answered here?"
+    body="Ask it directly — contact us or bring it to a consultation. Straight questions get straight answers."
+    ctaId="faq_cta"
+  />
+</BaseLayout>

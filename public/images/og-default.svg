@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <!-- Social sharing image template — replace with final branded raster (1200x630 PNG) before launch -->
+  <rect width="1200" height="630" fill="#142440"/>
+  <rect x="0" y="0" width="1200" height="8" fill="#4db3a9"/>
+  <rect x="80" y="150" width="88" height="88" rx="16" fill="#1b3050" stroke="#4db3a9" stroke-width="2"/>
+  <text x="124" y="207" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="700" fill="#ffffff" text-anchor="middle">TX</text>
+  <text x="80" y="320" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="700" fill="#ffffff">Texas Medical Billing Company</text>
+  <text x="80" y="380" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#b9cbe0">Medical Billing and Revenue Cycle Support</text>
+  <text x="80" y="424" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#b9cbe0">for Texas Healthcare Practices</text>
+  <text x="80" y="540" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#4db3a9">texasmedicalbillingcompany.com</text>
+</svg>

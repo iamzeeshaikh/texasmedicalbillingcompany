@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page Not Found | Texas Medical Billing Company"
+  description="The page you were looking for could not be found. Find services, specialties, locations, and resources from here."
+  canonicalPath="/404/"
+  noindex
+>
+  <section class="section">
+    <div class="container-narrow py-16 text-center">
+      <p class="eyebrow">404</p>
+      <h1 class="h1 mt-3">Page Not Found</h1>
+      <p class="lead mx-auto mt-6 max-w-xl">
+        That page doesn’t exist — possibly a moved link or a typo in the address. Here are the fast
+        paths to what you probably wanted:
+      </p>
+      <div class="mx-auto mt-10 grid max-w-2xl gap-3 text-left sm:grid-cols-2">
+        {
+          [
+            { label: 'Medical billing services', href: '/services/' },
+            { label: 'Specialty billing library', href: '/specialties/' },
+            { label: 'Texas locations', href: '/locations/' },
+            { label: 'Knowledge center guides', href: '/guides/' },
+            { label: 'Billing problems we solve', href: '/solutions/' },
+            { label: 'Contact us', href: '/contact/' },
+          ].map((link) => (
+            <a
+              href={link.href}
+              class="flex items-center justify-between rounded-md border border-slate-200 bg-white px-5 py-3.5 text-sm font-medium text-navy-900 hover:border-teal-300 hover:bg-teal-50/40"
+            >
+              {link.label}
+              <span aria-hidden="true" class="text-teal-600">→</span>
+            </a>
+          ))
+        }
+      </div>
+      <p class="mt-10 text-sm text-slate-500">
+        Or start from the <a href="/" class="text-teal-700 underline">homepage</a> — and if a link
+        on our own site brought you here, <a href="/contact/" class="text-teal-700 underline">tell us</a> so we can fix it.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

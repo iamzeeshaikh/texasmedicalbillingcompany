@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import { specialties } from '../../data';
+import { breadcrumbSchema, itemListSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+
+const sorted = [...specialties].sort((a, b) => a.specialtyName.localeCompare(b.specialtyName));
+const featured = specialties.filter((s) => s.featured);
+
+const schema = [
+  breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Specialties' }]),
+  itemListSchema(sorted.map((s) => ({ name: s.title, url: canonicalUrl(`/specialties/${s.slug}/`) }))),
+];
+---
+
+<BaseLayout
+  title="Medical Billing by Specialty | 57 Specialties Supported"
+  description="Specialty-specific medical billing for Texas practices: cardiology, orthopedics, behavioral health, therapy disciplines, facilities, and 50+ more specialties."
+  canonicalPath="/specialties/"
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Specialty Billing"
+    h1="Medical Billing by Specialty"
+    lead="Payer rules, denial patterns, and documentation risks differ radically by specialty — so our billing workflows do too. Find yours below."
+    breadcrumbs={[{ name: 'Specialties' }]}
+    showCtas
+  />
+
+  {featured.length > 0 && (
+    <section class="section">
+      <div class="container-site">
+        <h2 class="h2">High-Volume Specialties</h2>
+        <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {featured.map((s) => (
+            <a href={`/specialties/${s.slug}/`} class="card-link">
+              <span class="badge-teal mb-3">Featured</span>
+              <p class="font-semibold text-navy-900">{s.specialtyName} Billing</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                {s.summary.length > 130 ? s.summary.slice(0, 130) + '…' : s.summary}
+              </p>
+              <p class="mt-3 text-sm font-semibold text-teal-700">View specialty →</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section section-alt">
+    <div class="container-site">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <h2 class="h2">All Specialties (A–Z)</h2>
+        <label class="block w-full max-w-xs">
+          <span class="sr-only">Filter specialties</span>
+          <input
+            type="search"
+            placeholder="Filter specialties…"
+            class="form-input"
+            data-specialty-filter
+            autocomplete="off"
+          />
+        </label>
+      </div>
+      <ul class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-specialty-list>
+        {
+          sorted.map((s) => (
+            <li data-name={s.specialtyName.toLowerCase()}>
+              <a
+                href={`/specialties/${s.slug}/`}
+                class="flex items-center justify-between rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-navy-900 hover:border-teal-300 hover:bg-teal-50/40"
+              >
+                {s.specialtyName}
+                <span aria-hidden="true" class="text-teal-600">→</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-6 hidden text-sm text-slate-500" data-no-results>No specialties match that filter.</p>
+    </div>
+  </section>
+
+  <CtaSection
+    heading="Don’t see your specialty?"
+    body="Our content model adds specialties continuously — and our billing team likely already works yours. Ask us directly."
+    ctaId="specialties_hub"
+  />
+
+  <script>
+    // Crawl-safe client-side filter: no URL parameters, no indexable states.
+    const input = document.querySelector<HTMLInputElement>('[data-specialty-filter]');
+    const items = document.querySelectorAll<HTMLLIElement>('[data-specialty-list] li');
+    const noResults = document.querySelector<HTMLElement>('[data-no-results]');
+    input?.addEventListener('input', () => {
+      const q = input.value.toLowerCase().trim();
+      let visible = 0;
+      items.forEach((li) => {
+        const match = !q || (li.dataset.name ?? '').includes(q);
+        li.classList.toggle('hidden', !match);
+        if (match) visible++;
+      });
+      noResults?.classList.toggle('hidden', visible > 0);
+    });
+  </script>
+</BaseLayout>

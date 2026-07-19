@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import { solutions } from '../../data';
+import { breadcrumbSchema, itemListSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+
+const schema = [
+  breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Solutions' }]),
+  itemListSchema(solutions.map((s) => ({ name: s.title, url: canonicalUrl(`/solutions/${s.slug}/`) }))),
+];
+---
+
+<BaseLayout
+  title="Medical Billing Problems We Solve | Diagnosis & Fixes"
+  description="Denial rates, aged AR, slow payments, revenue leakage, staff turnover — 21 billing problems diagnosed with symptoms, causes, and practical fixes."
+  canonicalPath="/solutions/"
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Problems We Solve"
+    h1="Medical Billing Problems, Diagnosed"
+    lead="Every revenue cycle problem has symptoms, causes, and a fix sequence. These pages diagnose the ones we see most — honestly, including the parts you can fix without us."
+    breadcrumbs={[{ name: 'Solutions' }]}
+    showCtas
+  />
+
+  <section class="section">
+    <div class="container-site">
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          solutions.map((solution) => (
+            <a href={`/solutions/${solution.slug}/`} class="card-link">
+              {solution.featured && <span class="badge-teal mb-3">Common</span>}
+              <p class="font-semibold text-navy-900">{solution.title}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                {solution.summary.length > 130 ? solution.summary.slice(0, 130) + '…' : solution.summary}
+              </p>
+              <p class="mt-3 text-sm font-semibold text-teal-700">See the diagnosis →</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaSection
+    heading="Not sure which problem you have?"
+    body="That is literally what the free billing assessment answers: your KPIs, measured and compared, with the gaps named."
+    ctaId="solutions_hub"
+  />
+</BaseLayout>

@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import { services } from '../../data';
+import { breadcrumbSchema, itemListSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+
+const categories = [
+  { key: 'core', label: 'Core Billing Operations', blurb: 'The daily claim engine: charges, claims, posting, and patient billing.' },
+  { key: 'front-end', label: 'Front-End & Prevention', blurb: 'Eligibility, benefits, authorizations, and credentialing — where denials are prevented.' },
+  { key: 'recovery', label: 'Denials & Revenue Recovery', blurb: 'Denials, appeals, follow-up, and aged AR — where lost revenue gets found.' },
+  { key: 'analysis', label: 'Audits, Analytics & Integrity', blurb: 'Audits, assessments, underpayment detection, and the reporting layer.' },
+  { key: 'practice-type', label: 'Practice-Type Solutions', blurb: 'Service models shaped to practice size, structure, and stage.' },
+] as const;
+
+const schema = [
+  breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Services' }]),
+  itemListSchema(services.map((s) => ({ name: s.title, url: canonicalUrl(`/services/${s.slug}/`) }))),
+];
+---
+
+<BaseLayout
+  title="Medical Billing Services | Texas Medical Billing Company"
+  description="Explore our complete medical billing and revenue cycle services for Texas practices: claims, denials, credentialing, AR recovery, audits, and more."
+  canonicalPath="/services/"
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Our Services"
+    h1="Medical Billing and Revenue Cycle Services"
+    lead="Every service below is a defined workflow with documented scope, measurable output, and honest reporting — combined into full engagements or delivered as focused support."
+    breadcrumbs={[{ name: 'Services' }]}
+    showCtas
+  />
+
+  {
+    categories.map((cat, i) => {
+      const items = services.filter((s) => s.category === cat.key);
+      return (
+        <section class={`section ${i % 2 === 1 ? 'section-alt' : ''}`}>
+          <div class="container-site">
+            <h2 class="h2">{cat.label}</h2>
+            <p class="mt-2 max-w-2xl text-slate-600">{cat.blurb}</p>
+            <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {items.map((service) => (
+                <a href={`/services/${service.slug}/`} class="card-link">
+                  <p class="font-semibold text-navy-900">{service.title}</p>
+                  <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                    {service.summary.length > 140 ? service.summary.slice(0, 140) + '…' : service.summary}
+                  </p>
+                  <p class="mt-3 text-sm font-semibold text-teal-700">View service →</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    })
+  }
+
+  <CtaSection
+    heading="Not sure which service fits your situation?"
+    body="Start with the free billing assessment — we baseline your KPIs and recommend only the scope your data supports."
+    ctaId="services_hub"
+  />
+</BaseLayout>

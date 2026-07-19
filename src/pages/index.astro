@@ -1,0 +1,397 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FaqSection from '../components/FaqSection.astro';
+import { services, specialties, solutions, locations } from '../data';
+import { faqSchema } from '../lib/schema';
+import { SITE, CTAS } from '../config/site';
+
+const featuredServices = services.filter((s) => s.featured).slice(0, 6);
+const featuredSpecialties = specialties.filter((s) => s.featured).slice(0, 6);
+const topSolutions = solutions.slice(0, 6);
+const majorCities = locations.filter((l) => l.featured);
+
+const whoWeServe = [
+  { title: 'Independent Physicians', text: 'Solo and small-group practices that need billing done right without building a department.' },
+  { title: 'Group Practices', text: 'Multi-provider and multi-location groups needing provider-level accountability and per-site visibility.' },
+  { title: 'Clinics & Facilities', text: 'Urgent care, therapy clinics, ASCs, and post-acute providers with facility-grade billing needs.' },
+  { title: 'Practice Managers', text: 'Administrators who want a billing operation they can verify — not a black box they have to trust.' },
+];
+
+const processSteps = [
+  { n: '01', title: 'Free assessment', text: 'We baseline your KPIs — denial rate, days in AR, collections — from your own data.' },
+  { n: '02', title: 'Scoped proposal', text: 'A written scope matched to your actual gaps, with pricing from your real numbers.' },
+  { n: '03', title: 'Secure onboarding', text: 'BAA, role-based access to your system, documented workflows, dated cutover plan.' },
+  { n: '04', title: 'Daily production', text: 'Claims, denials, posting, and follow-up worked daily — visible in your own system.' },
+  { n: '05', title: 'Honest reporting', text: 'Monthly KPI packages in plain language, reviewed together, with actions attached.' },
+];
+
+const whyOutsource = [
+  { title: 'Staffing risk ends', text: 'No more one-person dependency, hiring searches, or transition revenue dips.' },
+  { title: 'Costs scale with revenue', text: 'Variable pricing replaces fixed salary overhead — and includes the expertise layer.' },
+  { title: 'Follow-up actually happens', text: 'Denials, aged claims, and payer silence get worked on cadence, not "when there\'s time."' },
+  { title: 'You can finally see it', text: 'Consistent KPIs, honest commentary, and numbers you can verify in your own system.' },
+];
+
+const homeFaqs = [
+  {
+    question: 'Do we have to change our practice management software?',
+    answer:
+      'No — we work inside your existing, client-authorized system wherever platform access rules allow. Your data stays in your system, and you can watch our work in your own queues and audit logs.',
+  },
+  {
+    question: 'How is Texas Medical Billing Company priced?',
+    answer:
+      'Typically as a percentage of collections, with flat-fee and project structures where they fit better. Pricing depends on your specialty, volume, collections, scope, AR condition, providers, locations, payer mix, and software — we quote from your actual numbers and explain the drivers.',
+  },
+  {
+    question: 'How long does onboarding take?',
+    answer:
+      'Most single-specialty practices complete transition in two to four weeks: access setup, workflow documentation, and a parallel ramp before full production. Complex groups take longer, with the timeline defined in writing before we start.',
+  },
+  {
+    question: 'Is our data secure with a remote billing team?',
+    answer:
+      'Security is structural: named individual logins (never shared), role-based minimum-necessary access, signed Business Associate Agreements, documented device and access policies, and your system’s own audit trails covering every action. Our HIPAA and security page details the framework.',
+  },
+  {
+    question: 'What if it doesn’t work out?',
+    answer:
+      'Our contracts define an orderly exit: notice period, transition support, and your data remaining yours. We would rather earn renewals through reporting you can verify than through exit barriers.',
+  },
+];
+---
+
+<BaseLayout
+  title="Medical Billing Services for Texas Practices | Texas Medical Billing Company"
+  description={SITE.description}
+  canonicalPath="/"
+  schema={[faqSchema(homeFaqs)]}
+>
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-navy-50/70 via-white to-white">
+    <div class="container-site py-16 md:py-24">
+      <div class="max-w-3xl">
+        <p class="eyebrow mb-4">Medical Billing · Revenue Cycle Management · Texas</p>
+        <h1 class="h1">Medical Billing Services for Texas Healthcare Practices</h1>
+        <p class="lead mt-6">
+          Texas Medical Billing Company helps physicians and healthcare organizations manage claims,
+          denials, accounts receivable, credentialing, and other revenue cycle workflows — inside
+          your existing systems, with reporting you can verify.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href={CTAS.primary.href} class="btn-accent" data-analytics="cta_click" data-cta="home_hero_primary">
+            {CTAS.primary.label}
+          </a>
+          <a href="/services/" class="btn-secondary">Explore Medical Billing Services</a>
+        </div>
+        <ul class="mt-10 flex flex-wrap gap-x-8 gap-y-2 text-sm text-slate-500">
+          <li class="flex items-center gap-2"><span aria-hidden="true" class="h-1.5 w-1.5 rounded-full bg-teal-500"></span>Your software, your data</li>
+          <li class="flex items-center gap-2"><span aria-hidden="true" class="h-1.5 w-1.5 rounded-full bg-teal-500"></span>BAA-governed secure workflows</li>
+          <li class="flex items-center gap-2"><span aria-hidden="true" class="h-1.5 w-1.5 rounded-full bg-teal-500"></span>Plain-language monthly reporting</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust-focused intro -->
+  <section class="section">
+    <div class="container-site grid items-start gap-10 lg:grid-cols-2">
+      <div class="prose-site">
+        <p class="eyebrow">A different kind of billing company</p>
+        <h2 class="h2 mt-2">Built on process discipline and verifiable results</h2>
+        <p>
+          We are a new brand with an old-fashioned premise: billing companies should be judged on
+          evidence, not promises. That is why we work inside your own practice management system
+          where you can see every claim, publish honest educational content instead of invented
+          statistics, and report KPIs with consistent definitions you can check against your own
+          data.
+        </p>
+        <p>
+          No fake counters, no purchased testimonials, no guaranteed-revenue claims — just
+          documented workflows, daily production, and reporting written for physicians rather than
+          for other billers.
+        </p>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        {
+          [
+            { title: 'Transparency', text: 'Work performed in your system, visible in your queues and audit logs.' },
+            { title: 'Process discipline', text: 'Documented workflows with turnaround standards — not tribal knowledge.' },
+            { title: 'Texas focus', text: 'Payer mixes, Medicaid MCOs, TRICARE markets, and DWC comp — the Texas rulebooks, natively.' },
+            { title: 'Honest reporting', text: 'KPIs with fixed definitions, trends explained, and problems surfaced early.' },
+          ].map((item) => (
+            <div class="card">
+              <p class="font-semibold text-navy-900">{item.title}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Core services -->
+  <section class="section section-alt">
+    <div class="container-site">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow">What we do</p>
+          <h2 class="h2 mt-2">Core Medical Billing Services</h2>
+        </div>
+        <a href="/services/" class="text-sm font-semibold text-teal-700 hover:text-teal-800">View all 32 services →</a>
+      </div>
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          featuredServices.map((service) => (
+            <a href={`/services/${service.slug}/`} class="card-link">
+              <p class="font-semibold text-navy-900">{service.title}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                {service.summary.length > 120 ? service.summary.slice(0, 120) + '…' : service.summary}
+              </p>
+              <p class="mt-3 text-sm font-semibold text-teal-700">Learn more →</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Who we serve -->
+  <section class="section">
+    <div class="container-site">
+      <p class="eyebrow">Who we serve</p>
+      <h2 class="h2 mt-2">Practices and Organizations We Support</h2>
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          whoWeServe.map((item) => (
+            <div class="card">
+              <p class="font-semibold text-navy-900">{item.title}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Specialty overview -->
+  <section class="section section-alt">
+    <div class="container-site">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow">Specialty billing</p>
+          <h2 class="h2 mt-2">Billing That Knows Your Specialty</h2>
+        </div>
+        <a href="/specialties/" class="text-sm font-semibold text-teal-700 hover:text-teal-800">View all 57 specialties →</a>
+      </div>
+      <p class="mt-4 max-w-3xl text-slate-600">
+        Cardiology’s authorization gauntlet, orthopedics’ global periods, behavioral health’s
+        concurrent reviews, therapy’s 8-minute rule — payer rules differ radically by specialty, and
+        so do our workflows.
+      </p>
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          featuredSpecialties.map((s) => (
+            <a href={`/specialties/${s.slug}/`} class="card-link">
+              <p class="font-semibold text-navy-900">{s.specialtyName} Billing</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                {s.summary.length > 110 ? s.summary.slice(0, 110) + '…' : s.summary}
+              </p>
+              <p class="mt-3 text-sm font-semibold text-teal-700">View specialty →</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Common problems -->
+  <section class="section">
+    <div class="container-site">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow">Problems we solve</p>
+          <h2 class="h2 mt-2">Common Revenue Cycle Problems</h2>
+        </div>
+        <a href="/solutions/" class="text-sm font-semibold text-teal-700 hover:text-teal-800">All 21 problems →</a>
+      </div>
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          topSolutions.map((solution) => (
+            <a
+              href={`/solutions/${solution.slug}/`}
+              class="flex items-center justify-between rounded-md border border-slate-200 bg-white px-5 py-4 font-medium text-navy-900 shadow-(--shadow-card) hover:border-teal-300 hover:bg-teal-50/40"
+            >
+              {solution.title}
+              <span aria-hidden="true" class="text-teal-600">→</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="section-navy section">
+    <div class="container-site">
+      <p class="eyebrow text-teal-300">How it works</p>
+      <h2 class="h2 mt-2 text-white">From First Call to Clean Claims</h2>
+      <ol class="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
+        {
+          processSteps.map((step) => (
+            <li>
+              <p class="text-sm font-bold tracking-widest text-teal-400">{step.n}</p>
+              <h3 class="mt-2 font-semibold text-white">{step.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-navy-200">{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="mt-10">
+        <a href="/our-process/" class="btn-ghost-light">See the full process</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why outsource -->
+  <section class="section">
+    <div class="container-site">
+      <p class="eyebrow">Why practices consider outsourcing</p>
+      <h2 class="h2 mt-2">What Changes When Billing Stops Being Your Problem</h2>
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          whyOutsource.map((item) => (
+            <div class="card">
+              <p class="font-semibold text-navy-900">{item.title}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="mt-6 text-sm text-slate-500">
+        Honest caveat: outsourcing is not right for every practice.{' '}
+        <a href="/compare/in-house-vs-outsourced-medical-billing/" class="text-teal-700 underline">
+          Our comparison guide
+        </a>{' '}
+        names the cases where in-house wins.
+      </p>
+    </div>
+  </section>
+
+  <!-- Texas coverage -->
+  <section class="section section-alt">
+    <div class="container-site">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow">Texas coverage</p>
+          <h2 class="h2 mt-2">Serving Practices Across Texas</h2>
+        </div>
+        <a href="/locations/" class="text-sm font-semibold text-teal-700 hover:text-teal-800">All 62 Texas locations →</a>
+      </div>
+      <p class="mt-4 max-w-3xl text-slate-600">
+        Secure remote workflows serve every Texas market with the same daily discipline — while our
+        market knowledge stays local: Houston’s payer density, the Valley’s Medicaid depth, Military
+        City’s TRICARE, the Basin’s comp volume.
+      </p>
+      <ul class="mt-8 flex flex-wrap gap-3">
+        {
+          majorCities.map((l) => (
+            <li>
+              <a
+                href={`/locations/${l.slug}/`}
+                class="inline-block rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-navy-900 hover:border-teal-300 hover:bg-teal-50/40"
+              >
+                {l.cityName}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href="/locations/" class="inline-block rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-sm font-semibold text-teal-800">
+            + 56 more cities
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Security & workflow -->
+  <section class="section">
+    <div class="container-site grid items-start gap-10 lg:grid-cols-2">
+      <div class="prose-site">
+        <p class="eyebrow">Security & workflow</p>
+        <h2 class="h2 mt-2">HIPAA-Aligned Safeguards, Documented</h2>
+        <p>
+          Remote billing raises a fair question — how is patient data protected? — and it deserves a
+          specific answer, not a badge: named individual logins under your system’s user management,
+          role-based minimum-necessary access, signed Business Associate Agreements, documented
+          device and access policies, and audit trails covering every action our team takes.
+        </p>
+        <p>
+          <a href="/hipaa-and-security/">Read the full security framework</a> — and bring your
+          compliance reviewer’s hardest questions.
+        </p>
+      </div>
+      <div class="prose-site">
+        <p class="eyebrow">Reporting & visibility</p>
+        <h2 class="h2 mt-2">Numbers You Can Actually Verify</h2>
+        <p>
+          Every engagement includes a monthly KPI package with consistent definitions — collections,
+          denial trends by category, AR aging, clean claim rate, net collection rate — explained in
+          plain language with the actions we’re taking. Because we work in your system, you can
+          check our numbers against your own data anytime.
+        </p>
+        <p>
+          <a href="/services/practice-financial-reporting/">See what the reporting includes</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Educational resources -->
+  <section class="section section-alt">
+    <div class="container-site">
+      <p class="eyebrow">Learn before you buy</p>
+      <h2 class="h2 mt-2">Educational Resources</h2>
+      <p class="mt-4 max-w-3xl text-slate-600">
+        Our knowledge center exists so practices can understand their own revenue cycle — whether or
+        not they ever hire us.
+      </p>
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          [
+            { title: 'Knowledge Center', href: '/guides/', text: '27 guides to billing metrics, processes, and forms.' },
+            { title: 'Cost Resources', href: '/cost/', text: 'How billing services are actually priced.' },
+            { title: 'Comparisons', href: '/compare/', text: 'Honest decision guides for billing choices.' },
+            { title: 'Blog & Insights', href: '/blog/', text: 'Practical writing on Texas practice revenue.' },
+          ].map((item) => (
+            <a href={item.href} class="card-link">
+              <p class="font-semibold text-navy-900">{item.title}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">{item.text}</p>
+              <p class="mt-3 text-sm font-semibold text-teal-700">Explore →</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <FaqSection faqs={homeFaqs} heading="Frequently Asked Questions" />
+
+  <!-- Final CTA -->
+  <section class="section-navy">
+    <div class="container-site py-16 text-center md:py-20">
+      <h2 class="h2 text-white">Find out where your billing actually stands</h2>
+      <p class="mx-auto mt-4 max-w-2xl text-navy-200">
+        The free billing assessment baselines your KPIs from your own data — no obligation, and the
+        findings are yours regardless of what you decide.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href={CTAS.primary.href} class="btn-accent" data-analytics="cta_click" data-cta="home_final">
+          {CTAS.primary.label}
+        </a>
+        <a href={CTAS.secondary.href} class="btn-ghost-light">{CTAS.secondary.label}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import { payers } from '../../data';
+import { breadcrumbSchema, itemListSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+import { PAYER_DISCLAIMER } from '../../config/site';
+
+const schema = [
+  breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Payer Resources' }]),
+  itemListSchema(payers.map((p) => ({ name: p.h1, url: canonicalUrl(`/payers/${p.slug}/`) }))),
+];
+---
+
+<BaseLayout
+  title="Payer Billing Resources | Medicare, Medicaid & Texas Plans"
+  description="Educational billing guides for the payers Texas practices work with: Medicare, Texas Medicaid, BCBSTX, TRICARE, workers' comp, and major commercial plans."
+  canonicalPath="/payers/"
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Payer Resources"
+    h1="Payer Billing Resource Library"
+    lead="Educational guides to the payers that dominate Texas practice revenue — how each is structured, where claims fail, and the operational disciplines that keep them paying."
+    breadcrumbs={[{ name: 'Payer Resources' }]}
+  />
+
+  <section class="border-b border-slate-100 bg-sand-50 py-4">
+    <div class="container-site">
+      <p class="text-xs leading-relaxed text-slate-600">
+        <strong>Disclaimer:</strong> {PAYER_DISCLAIMER.replace('the payer discussed on this page', 'any payer discussed in these resources')}
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-site">
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          payers.map((payer) => (
+            <a href={`/payers/${payer.slug}/`} class="card-link">
+              {payer.featured && <span class="badge-teal mb-3">Essential</span>}
+              <p class="font-semibold text-navy-900">{payer.title}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                {payer.summary.length > 140 ? payer.summary.slice(0, 140) + '…' : payer.summary}
+              </p>
+              <p class="mt-3 text-sm font-semibold text-teal-700">Read the guide →</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaSection
+    heading="Payer problems are workflow problems"
+    body="Whatever payer is slowing your revenue, the answer is usually process — and we build those processes daily."
+    ctaId="payers_hub"
+  />
+</BaseLayout>

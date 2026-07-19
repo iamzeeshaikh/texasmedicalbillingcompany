@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaSection from '../components/CtaSection.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+
+const differences = [
+  {
+    title: 'Your system, your visibility',
+    text: 'We work inside your client-authorized practice management system wherever platform rules allow — every claim, note, and queue visible to you in real time. Vendors who move your data into their systems are asking you to trust reports; we let you verify.',
+  },
+  {
+    title: 'Specialty-native workflows',
+    text: 'Our specialty pages are not marketing wallpaper — they document the actual workflow differences we run: global-period calendars for surgeons, concurrent-review calendars for behavioral programs, unit-math per payer for therapists.',
+  },
+  {
+    title: 'Texas payer depth',
+    text: 'Texas Medicaid MCO mechanics, TRICARE for the military markets, DWC workers’ comp, border-market realities, and every metro’s payer mix — one state, known operationally.',
+  },
+  {
+    title: 'Reporting written for physicians',
+    text: 'Monthly KPI packages with fixed definitions and plain-language commentary: what moved, why, and what we are doing about it. If your last vendor’s reports required a translator, you already know why this matters.',
+  },
+  {
+    title: 'Honest scoping — including “no”',
+    text: 'The assessment sometimes concludes a practice should fix in-house operations, keep its current vendor, or buy less than it planned. We publish comparison guides that name where competitors’ models win. Evidence first; sales second.',
+  },
+  {
+    title: 'Contracts you can leave',
+    text: 'Defined exit terms, transition support, and your data remaining yours. Retention should be earned monthly through results — a philosophy that also tells you how we intend to operate.',
+  },
+];
+
+const questions = [
+  'Who exactly will work our account, and how many accounts do they carry?',
+  'Can we see your work in our own system, or only in your reports?',
+  'What are your turnaround standards for charges, rejections, and denials?',
+  'What does your monthly reporting include, and can definitions change?',
+  'What happens to our data and workflows if we leave?',
+  'Where is each billing function performed, and under what security controls?',
+];
+---
+
+<BaseLayout
+  title="Why Choose Us | Texas Medical Billing Company"
+  description="Why practices choose Texas Medical Billing Company: in-system transparency, specialty-native workflows, Texas payer depth, and contracts you can exit."
+  canonicalPath="/why-us/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Why Choose Us' }])]}
+>
+  <PageHero
+    eyebrow="Why Choose Us"
+    h1="Why Practices Choose Texas Medical Billing Company"
+    lead="Not because of invented statistics — we don’t publish any — but because of how the operation is built: verifiable, specialty-aware, and honest about trade-offs."
+    breadcrumbs={[{ name: 'Why Choose Us' }]}
+    showCtas
+  />
+
+  <section class="section">
+    <div class="container-site">
+      <div class="grid gap-5 md:grid-cols-2">
+        {
+          differences.map((item) => (
+            <div class="card">
+              <p class="font-semibold text-navy-900">{item.title}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container-site grid items-start gap-10 lg:grid-cols-2">
+      <div class="prose-site">
+        <h2>Ask Us the Hard Questions</h2>
+        <p>
+          The best way to evaluate any billing vendor — including us — is a set of questions that
+          expose how the operation actually runs. Bring these to every sales conversation you have,
+          ours included:
+        </p>
+      </div>
+      <ul class="space-y-3">
+        {
+          questions.map((q) => (
+            <li class="flex items-start gap-3 rounded-md border border-slate-200 bg-white px-5 py-4 text-sm font-medium text-navy-900">
+              <span aria-hidden="true" class="mt-0.5 text-teal-600">?</span>
+              {q}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-site prose-site max-w-3xl">
+      <h2>What We Don’t Claim</h2>
+      <p>
+        You will not find guaranteed collection improvements, invented client counts, fake reviews,
+        or “#1 billing company” badges on this site — the industry has plenty of those, and they
+        predict nothing. What predicts results is process quality, and process quality is
+        demonstrable: in the assessment, in the scoping documents, and in the first ninety days of
+        measurable work.
+      </p>
+    </div>
+  </section>
+
+  <CtaSection
+    heading="Judge us on evidence"
+    body="Start with the free assessment. If our findings and process don’t earn the engagement, you keep the analysis anyway."
+    ctaId="why_us_cta"
+  />
+</BaseLayout>

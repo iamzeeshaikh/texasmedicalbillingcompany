@@ -1,0 +1,115 @@
+---
+/**
+ * Programmatic specialty × city pages — STRICTLY GATED.
+ * Pages exist ONLY for entries in src/data/combos.ts, each requiring
+ * unique local+specialty insight (schema-enforced). Combos default to
+ * noindex; indexation is earned per PROGRAMMATIC-SEO.md. Do not convert
+ * this route to a cartesian product of specialties × cities.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import FaqSection from '../../../components/FaqSection.astro';
+import CtaSection from '../../../components/CtaSection.astro';
+import RelatedLinks from '../../../components/RelatedLinks.astro';
+import { combos, specialties, locations } from '../../../data';
+import { breadcrumbSchema, serviceSchema, faqSchema } from '../../../lib/schema';
+import { canonicalUrl } from '../../../lib/url';
+
+export function getStaticPaths() {
+  return combos.map((combo) => {
+    const specialty = specialties.find((s) => s.slug === combo.specialtySlug)!;
+    const location = locations.find((l) => l.slug === combo.citySlug)!;
+    return {
+      params: { slug: combo.specialtySlug, city: location.slug.replace('-medical-billing', '') },
+      props: { combo, specialty, location },
+    };
+  });
+}
+
+const { combo, specialty, location } = Astro.props;
+const path = `/specialties/${combo.specialtySlug}/${location.slug.replace('-medical-billing', '')}/`;
+
+const schema = [
+  breadcrumbSchema([
+    { name: 'Home', url: canonicalUrl('/') },
+    { name: 'Specialties', url: canonicalUrl('/specialties/') },
+    { name: specialty.title, url: canonicalUrl(`/specialties/${specialty.slug}/`) },
+    { name: location.cityName },
+  ]),
+  serviceSchema({ name: combo.h1, description: combo.metaDescription, url: canonicalUrl(path) }),
+  faqSchema(combo.faqs),
+];
+---
+
+<BaseLayout
+  title={combo.seoTitle}
+  description={combo.metaDescription}
+  canonicalPath={path}
+  noindex={!combo.indexable}
+  schema={schema}
+>
+  <PageHero
+    eyebrow={`${specialty.specialtyName} · ${location.cityName}`}
+    h1={combo.h1}
+    breadcrumbs={[
+      { name: 'Specialties', href: '/specialties/' },
+      { name: specialty.title, href: `/specialties/${specialty.slug}/` },
+      { name: location.cityName },
+    ]}
+    showCtas
+  />
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-3">
+      <div class="prose-site lg:col-span-2">
+        {combo.uniqueInsights.map((para) => <p class="text-lg">{para}</p>)}
+
+        <h2>{specialty.specialtyName} Billing Considerations in {location.cityName}</h2>
+        <ul>
+          {combo.localConsiderations.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <aside class="space-y-6">
+        <div class="card">
+          <h2 class="h3">Go Deeper</h2>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li>
+              <a href={`/specialties/${specialty.slug}/`} class="text-teal-700 underline">
+                Full {specialty.specialtyName} billing guide →
+              </a>
+            </li>
+            <li>
+              <a href={`/locations/${location.slug}/`} class="text-teal-700 underline">
+                Medical billing in {location.cityName} →
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card bg-navy-900 text-white">
+          <p class="font-bold">Serving {location.cityName} {specialty.specialtyName.toLowerCase()} practices</p>
+          <p class="mt-2 text-sm text-navy-200">
+            Secure remote billing workflows — your system, your visibility, our production.
+          </p>
+          <a href="/free-billing-assessment/" class="btn-accent mt-4 w-full" data-analytics="cta_click" data-cta={`combo_${combo.specialtySlug}_${location.slug}`}>
+            Request a Free Billing Assessment
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <FaqSection faqs={combo.faqs} />
+
+  <RelatedLinks
+    heading="Related Pages"
+    links={[
+      { title: `${specialty.specialtyName} Billing Services`, href: `/specialties/${specialty.slug}/`, badge: 'Specialty' },
+      { title: `Medical Billing in ${location.cityName}`, href: `/locations/${location.slug}/`, badge: 'Location' },
+      { title: 'Denial Management Services', href: '/services/denial-management/', badge: 'Service' },
+    ]}
+    alt
+  />
+
+  <CtaSection ctaId={`combo_cta_${combo.specialtySlug}_${location.slug}`} />
+</BaseLayout>

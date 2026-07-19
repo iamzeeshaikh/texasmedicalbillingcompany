@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+import { CONTACT } from '../config/site';
+---
+
+<BaseLayout
+  title="Accessibility Statement | Texas Medical Billing Company"
+  description="Our accessibility commitment: WCAG-conscious design, keyboard navigation, and how to report accessibility barriers on this site."
+  canonicalPath="/accessibility/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Accessibility' }])]}
+>
+  <PageHero h1="Accessibility Statement" breadcrumbs={[{ name: 'Accessibility' }]} />
+
+  <section class="section">
+    <div class="container-narrow prose-site">
+      <h2>Our Commitment</h2>
+      <p>
+        We want this website to be usable by everyone, including people using assistive
+        technologies. The site is built with accessibility as a design requirement, referencing the
+        Web Content Accessibility Guidelines (WCAG) 2.1 Level AA as our standard.
+      </p>
+
+      <h2>What We’ve Implemented</h2>
+      <ul>
+        <li>Semantic HTML structure with one H1 per page and logical heading hierarchy</li>
+        <li>Keyboard-accessible navigation, menus, accordions, and forms with visible focus states</li>
+        <li>A skip-to-content link on every page</li>
+        <li>Color contrast chosen against WCAG contrast expectations</li>
+        <li>Form fields with programmatically associated labels, hints, and error messages</li>
+        <li>Alternative text for meaningful images; decorative graphics hidden from assistive tech</li>
+        <li>Respect for reduced-motion preferences — animations are disabled for users who request it</li>
+        <li>Responsive layouts that support zoom and reflow without horizontal scrolling</li>
+      </ul>
+
+      <h2>Known Limitations</h2>
+      <p>
+        Accessibility is ongoing work, and third-party embedded tools (analytics, future scheduling
+        widgets) may not fully meet our standards. We review and improve continuously.
+      </p>
+
+      <h2>Report a Barrier</h2>
+      <p>
+        If you encounter an accessibility barrier on this site, please tell us:{' '}
+        <a href={`mailto:${CONTACT.email}?subject=Accessibility%20feedback`}>{CONTACT.email}</a>.
+        Include the page address and a description of the problem; we take these reports seriously
+        and will respond.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

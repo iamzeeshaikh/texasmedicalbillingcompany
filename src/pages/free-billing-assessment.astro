@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import LeadForm from '../components/forms/LeadForm.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+
+const deliverables = [
+  'Baseline KPIs computed from your data: denial rate by category, days in AR, over-90 share, clean claim rate, net collection rate',
+  'Comparison against published industry reference ranges for your specialty',
+  'The gaps named and sized — where revenue is leaking and roughly how much',
+  'A written summary you keep, whatever you decide next',
+];
+
+const steps = [
+  { title: 'Submit the request', text: 'Two minutes of basic practice information — no patient data, ever.' },
+  { title: 'Send standard reports', text: 'We reply with the exact report list to pull from your system (typically 15–20 minutes of work for your staff).' },
+  { title: 'We analyze', text: 'KPIs computed with stated definitions, gaps identified against your specialty’s realistic benchmarks.' },
+  { title: 'Findings call', text: 'A straightforward walkthrough of what we found — and an honest read on whether you need us at all.' },
+];
+---
+
+<BaseLayout
+  title="Free Billing Assessment | Baseline Your Practice KPIs"
+  description="Request a free medical billing assessment: your denial rate, AR aging, and collection KPIs measured from your own data — findings you keep, no obligation."
+  canonicalPath="/free-billing-assessment/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Free Billing Assessment' }])]}
+>
+  <PageHero
+    eyebrow="Free Billing Assessment"
+    h1="Find Out Where Your Billing Actually Stands"
+    lead="A measured baseline of your revenue cycle — computed from your own data, explained in plain language, and yours to keep whether or not you ever hire us."
+    breadcrumbs={[{ name: 'Free Billing Assessment' }]}
+  />
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-2">
+      <div>
+        <div class="prose-site">
+          <h2>What You Get</h2>
+          <ul>
+            {deliverables.map((item) => <li>{item}</li>)}
+          </ul>
+
+          <h2>How It Works</h2>
+        </div>
+        <ol class="mt-6 space-y-5">
+          {
+            steps.map((step, i) => (
+              <li class="flex gap-4">
+                <span class="step-number" aria-hidden="true">{i + 1}</span>
+                <div>
+                  <p class="font-semibold text-navy-900">{step.title}</p>
+                  <p class="mt-1 text-sm leading-relaxed text-slate-600">{step.text}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+        <div class="callout mt-8">
+          <p class="text-sm">
+            <strong>The honest catch:</strong> there isn’t one, but here is our interest declared —
+            some assessments become clients, which is why the assessment is free. The findings are
+            real analysis either way, and “your billing looks fine, keep doing what you’re doing” is
+            a conclusion we deliver when the data says so.
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <LeadForm
+          formId="billing-assessment"
+          heading="Request Your Free Assessment"
+          submitLabel="Request Free Assessment"
+          successMessage="Thank you — we’ll reply within one business day with the report list and next steps."
+          fields={[
+            { name: 'name', label: 'Your name', type: 'text', required: true },
+            { name: 'role', label: 'Your role', type: 'select', options: ['Physician / Owner', 'Practice Manager / Administrator', 'Office Manager', 'Other'] },
+            { name: 'practice', label: 'Practice name', type: 'text', required: true },
+            { name: 'email', label: 'Work email', type: 'email', required: true },
+            { name: 'phone', label: 'Phone', type: 'tel' },
+            { name: 'specialty', label: 'Primary specialty', type: 'text', required: true },
+            {
+              name: 'software',
+              label: 'Practice management software',
+              type: 'text',
+              placeholder: 'e.g. athenahealth, eClinicalWorks, Tebra',
+              hint: 'Helps us send the right report-pulling instructions.',
+            },
+            {
+              name: 'concern',
+              label: 'What prompted this? (optional)',
+              type: 'textarea',
+              placeholder: 'Denials rising, biller leaving, cash flow, just curious… (no patient information, please)',
+            },
+          ]}
+        />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaSection from '../components/CtaSection.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+
+const hubs = [
+  { title: 'Knowledge Center Guides', href: '/guides/', text: '27 cornerstone guides: billing fundamentals, the metrics that matter, claim forms, and denial playbooks — each with checklists and sources.' },
+  { title: 'Billing Problems We Solve', href: '/solutions/', text: '21 problem diagnoses: symptoms, causes, impact, and practical fix sequences for the revenue cycle failures practices actually face.' },
+  { title: 'Cost & Pricing Resources', href: '/cost/', text: 'How billing, coding, credentialing, and RCM services are priced — models, observed ranges, and comparison frameworks without sales fog.' },
+  { title: 'Comparison Guides', href: '/compare/', text: '11 honest decision guides — in-house vs outsourced, pricing models, vendor sizes — that name where every option wins.' },
+  { title: 'Payer Resource Library', href: '/payers/', text: 'Educational guides to Medicare, Texas Medicaid, TRICARE, workers’ comp, and the commercial payers dominating Texas practice revenue.' },
+  { title: 'Software Support Pages', href: '/software/', text: 'How we work inside 20 practice management platforms — workflows, access controls, and implementation notes per system.' },
+  { title: 'Blog & Insights', href: '/blog/', text: 'Practical writing on revenue cycle operations and Texas practice management — no filler, no fluff.' },
+  { title: 'Specialty Billing Library', href: '/specialties/', text: '57 specialty pages documenting the billing complexity, denial patterns, and KPIs specific to each field of practice.' },
+];
+---
+
+<BaseLayout
+  title="Resources | Medical Billing Knowledge for Texas Practices"
+  description="Our full resource library: billing guides, problem diagnoses, cost breakdowns, comparisons, payer resources, and specialty billing knowledge."
+  canonicalPath="/resources/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Resources' }])]}
+>
+  <PageHero
+    eyebrow="Resources"
+    h1="The Resource Library"
+    lead="Everything we publish exists so practices can understand their own revenue cycles — whether or not they ever hire us. Start anywhere; it's all free."
+    breadcrumbs={[{ name: 'Resources' }]}
+  />
+
+  <section class="section">
+    <div class="container-site">
+      <div class="grid gap-5 sm:grid-cols-2">
+        {
+          hubs.map((hub) => (
+            <a href={hub.href} class="card-link">
+              <p class="text-lg font-semibold text-navy-900">{hub.title}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">{hub.text}</p>
+              <p class="mt-3 text-sm font-semibold text-teal-700">Browse →</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaSection
+    heading="Prefer answers about your own practice?"
+    body="Resources explain the general case; the free assessment measures yours."
+    ctaId="resources_cta"
+  />
+</BaseLayout>

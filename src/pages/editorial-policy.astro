@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+import { CONTACT } from '../config/site';
+---
+
+<BaseLayout
+  title="Editorial Policy | Texas Medical Billing Company"
+  description="Our editorial policy: how educational content on this site is produced, what standards govern claims, and how honesty rules are enforced."
+  canonicalPath="/editorial-policy/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Editorial Policy' }])]}
+>
+  <PageHero
+    eyebrow="Editorial Standards"
+    h1="Editorial Policy"
+    lead="The rules our educational content is written under — published so readers can hold us to them."
+    breadcrumbs={[{ name: 'Editorial Policy' }]}
+  />
+
+  <section class="section">
+    <div class="container-narrow prose-site">
+      <h2>Purpose of Our Content</h2>
+      <p>
+        The educational content on this site — guides, payer resources, problem diagnoses,
+        comparisons, and blog posts — exists to help practices understand their own revenue cycles,
+        whether or not they ever engage our services. We are a billing company and say so plainly;
+        content that touches our commercial interest discloses it in place.
+      </p>
+
+      <h2>Honesty Rules We Enforce</h2>
+      <ul>
+        <li><strong>No invented facts about ourselves:</strong> no fabricated experience claims, client counts, results statistics, testimonials, certifications, or awards — anywhere, ever.</li>
+        <li><strong>No guaranteed outcomes:</strong> we do not promise recovery amounts, collection improvements, or revenue results, because honest billing companies cannot.</li>
+        <li><strong>Educational, not advisory:</strong> coding, payer, legal, and compliance content is general education, clearly disclaimed, and never presented as definitive professional advice.</li>
+        <li><strong>Industry figures are attributed as such:</strong> where we cite ranges or benchmarks, they are described as industry observations or published references — never as our own performance data.</li>
+        <li><strong>Comparisons name where competitors win:</strong> decision-guide content must present genuine trade-offs, including the cases against our own services.</li>
+        <li><strong>No affiliation implied:</strong> payer and software names are used for identification; disclaimers of non-affiliation appear on every relevant page.</li>
+      </ul>
+
+      <h2>Authorship</h2>
+      <p>
+        Content is currently published under company editorial authorship. Person-level author and
+        reviewer profiles will appear only for real, named individuals with their consent — we do
+        not publish invented experts. When individual profiles launch, their credentials will be
+        stated accurately and their review roles will be genuine.
+      </p>
+
+      <h2>Sources and Currency</h2>
+      <p>
+        Regulatory and payer content links to official sources where practical (CMS, TMHP, TDI,
+        payer provider sites). Healthcare rules change constantly; published dates and review dates
+        appear on guide content, and material updates trigger review-date changes. Readers should
+        always verify current rules with official sources before acting.
+      </p>
+
+      <h2>Related Policies</h2>
+      <p>
+        See our <a href="/content-review-process/">content review process</a> and{' '}
+        <a href="/corrections-policy/">corrections policy</a>. To report an error:{' '}
+        <a href={`mailto:${CONTACT.email}?subject=Content%20correction`}>{CONTACT.email}</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

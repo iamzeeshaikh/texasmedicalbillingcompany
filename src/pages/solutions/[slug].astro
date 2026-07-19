@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import FaqSection from '../../components/FaqSection.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import RelatedLinks from '../../components/RelatedLinks.astro';
+import ProcessSteps from '../../components/ProcessSteps.astro';
+import { solutions, services } from '../../data';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+
+export function getStaticPaths() {
+  return solutions.map((solution) => ({ params: { slug: solution.slug }, props: { solution } }));
+}
+
+const { solution } = Astro.props;
+const path = `/solutions/${solution.slug}/`;
+
+const serviceLinks = solution.relatedServices
+  .map((slug) => services.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .map((s) => ({ title: s.title, href: `/services/${s.slug}/`, badge: 'Service' }));
+
+const solutionLinks = solution.relatedSolutions
+  .map((slug) => solutions.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .map((s) => ({ title: s.title, href: `/solutions/${s.slug}/`, badge: 'Related Problem' }));
+
+const schema = [
+  breadcrumbSchema([
+    { name: 'Home', url: canonicalUrl('/') },
+    { name: 'Solutions', url: canonicalUrl('/solutions/') },
+    { name: solution.title },
+  ]),
+  faqSchema(solution.faqs),
+];
+---
+
+<BaseLayout
+  title={solution.seoTitle}
+  description={solution.metaDescription}
+  canonicalPath={path}
+  noindex={!solution.indexable}
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Billing Problems We Solve"
+    h1={solution.h1}
+    lead={solution.summary}
+    breadcrumbs={[{ name: 'Solutions', href: '/solutions/' }, { name: solution.title }]}
+    showCtas
+  />
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-3">
+      <div class="prose-site lg:col-span-2">
+        {solution.intro.map((para) => <p class="text-lg">{para}</p>)}
+
+        <h2>Symptoms</h2>
+        <ul>
+          {solution.symptoms.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2>Possible Causes</h2>
+        <ul>
+          {solution.causes.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2>Operational Impact</h2>
+        <ul>
+          {solution.impact.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2>Where Outsourced Support Helps</h2>
+        {solution.outsourcedHelp.map((para) => <p>{para}</p>)}
+        <div class="callout">
+          <p class="text-sm">
+            <strong>Honesty note:</strong> No billing partner can guarantee recovery amounts or
+            revenue improvements — results depend on your claims, payers, documentation, and
+            deadlines. What we guarantee is disciplined process and honest measurement.
+          </p>
+        </div>
+      </div>
+
+      <aside class="space-y-6">
+        <div class="card">
+          <h2 class="h3">Diagnostic Metrics</h2>
+          <ul class="mt-4 space-y-2.5">
+            {
+              solution.diagnostics.map((item) => (
+                <li class="flex items-start gap-2 text-sm text-slate-600">
+                  <span aria-hidden="true" class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500" />
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="card bg-navy-900 text-white">
+          <p class="font-bold">Facing this problem now?</p>
+          <p class="mt-2 text-sm text-navy-200">
+            The free assessment measures exactly where you stand — before you commit to anything.
+          </p>
+          <a href="/free-billing-assessment/" class="btn-accent mt-4 w-full" data-analytics="cta_click" data-cta={`solution_${solution.slug}`}>
+            Request a Free Billing Assessment
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <ProcessSteps heading="Practical Steps to Fix It" steps={solution.practicalSteps} alt />
+
+  <FaqSection faqs={solution.faqs} />
+
+  <RelatedLinks
+    heading="Services and Related Problems"
+    links={[...serviceLinks.slice(0, 3), ...solutionLinks.slice(0, 3)]}
+  />
+
+  <CtaSection heading="Stop managing this problem. Fix it." ctaId={`solution_cta_${solution.slug}`} />
+</BaseLayout>

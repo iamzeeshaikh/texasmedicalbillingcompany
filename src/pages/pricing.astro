@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import LeadForm from '../components/forms/LeadForm.astro';
+import ReviewFlag from '../components/ReviewFlag.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+
+const pricingDrivers = [
+  { factor: 'Specialty', why: 'Claim complexity varies enormously — session-based therapy billing and authorization-heavy interventional billing are different workloads per dollar collected.' },
+  { factor: 'Claim volume', why: 'Volume drives labor directly; larger volumes also improve pricing through scale.' },
+  { factor: 'Monthly collections', why: 'The base for percentage pricing, and the context for every model’s economics.' },
+  { factor: 'Scope of service', why: 'Claims-only, full billing, or complete RCM with front-end verification — scope is the largest price lever after specialty.' },
+  { factor: 'Existing AR condition', why: 'Inherited backlogs are separate projects with their own economics, scoped honestly up front.' },
+  { factor: 'Number of providers', why: 'Provider count proxies claim volume and adds credentialing and attribution workloads.' },
+  { factor: 'Locations', why: 'Multi-site operations add enrollment coverage, location-aware claims, and per-site reporting.' },
+  { factor: 'Payer mix', why: 'Medicaid-heavy, comp-heavy, and OON-heavy mixes each change the labor per collected dollar.' },
+  { factor: 'Software environment', why: 'Platform capabilities affect workflow efficiency; unusual stacks may need supplemental tooling.' },
+  { factor: 'Coding requirements', why: 'Included coding review versus full coding support are different scopes, priced explicitly.' },
+  { factor: 'Reporting requirements', why: 'Standard packages are included; custom analytics and board-grade reporting are scoped where needed.' },
+];
+---
+
+<BaseLayout
+  title="Pricing | Texas Medical Billing Company"
+  description="How our medical billing pricing works: the models we use, the factors that determine your rate, and a pricing inquiry that returns real numbers."
+  canonicalPath="/pricing/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Pricing' }])]}
+>
+  <ReviewFlag topics={['pricing']} note="Owner must confirm pricing model descriptions match actual company pricing policy before launch." />
+
+  <PageHero
+    eyebrow="Pricing"
+    h1="Pricing Built From Your Numbers"
+    lead="No teaser rates, no 'starting at' asterisks. Here is how our pricing actually works — and how to get your real number."
+    breadcrumbs={[{ name: 'Pricing' }]}
+  />
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-2">
+      <div class="prose-site">
+        <h2>How We Price</h2>
+        <p>
+          Most engagements price as a <strong>percentage of collections</strong> — the industry’s
+          standard model, aligning our revenue with yours — with
+          <strong> flat monthly fees</strong> for stable, defined scopes and
+          <strong> project pricing</strong> for bounded work like old AR recovery, credentialing
+          projects, and audits. Which structure we propose depends on your situation, and we explain
+          the reasoning either way.
+        </p>
+        <p>
+          We do not publish a rate card, for an honest reason: identical rates produce wildly
+          different economics across practices, and a number quoted before seeing your volume,
+          specialty, and AR condition would be either padded or wrong. Our
+          <a href="/cost/">cost resources</a> explain the industry’s observed ranges and models in
+          detail, so you can evaluate any quote — ours included — with full context.
+        </p>
+        <h2>What Determines Your Price</h2>
+        <div class="not-prose mt-6 overflow-x-auto">
+          <table class="table-site min-w-[520px] border border-slate-200">
+            <thead>
+              <tr>
+                <th class="border border-slate-200 bg-navy-50 px-4 py-2.5 text-left text-sm font-semibold text-navy-900">Factor</th>
+                <th class="border border-slate-200 bg-navy-50 px-4 py-2.5 text-left text-sm font-semibold text-navy-900">Why it matters</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                pricingDrivers.map((row) => (
+                  <tr>
+                    <td class="border border-slate-200 px-4 py-2.5 align-top text-sm font-medium text-navy-900">{row.factor}</td>
+                    <td class="border border-slate-200 px-4 py-2.5 align-top text-sm text-slate-600">{row.why}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="pricing-inquiry" class="scroll-mt-24">
+        <LeadForm
+          formId="pricing-inquiry"
+          heading="Request Pricing"
+          submitLabel="Request Pricing"
+          successMessage="Thank you — we’ll review your details and reply with pricing and reasoning within one business day."
+          fields={[
+            { name: 'name', label: 'Your name', type: 'text', required: true },
+            { name: 'practice', label: 'Practice name', type: 'text', required: true },
+            { name: 'email', label: 'Work email', type: 'email', required: true },
+            { name: 'phone', label: 'Phone', type: 'tel' },
+            {
+              name: 'specialty',
+              label: 'Primary specialty',
+              type: 'text',
+              required: true,
+              placeholder: 'e.g. Family Medicine, Orthopedics',
+            },
+            {
+              name: 'providers',
+              label: 'Number of providers',
+              type: 'select',
+              required: true,
+              options: ['1', '2–5', '6–10', '11–25', '26+'],
+            },
+            {
+              name: 'monthly_collections',
+              label: 'Approximate monthly collections',
+              type: 'select',
+              required: true,
+              options: ['Under $50k', '$50k–$150k', '$150k–$500k', '$500k–$1M', 'Over $1M', 'New practice / not sure'],
+            },
+            {
+              name: 'scope',
+              label: 'What scope are you considering?',
+              type: 'select',
+              options: ['Full billing service', 'Full RCM (incl. front-end)', 'AR/denial project only', 'Credentialing', 'Not sure yet'],
+            },
+            {
+              name: 'notes',
+              label: 'Anything else we should know?',
+              type: 'textarea',
+              placeholder: 'Current situation, software, timeline… (no patient information, please)',
+            },
+          ]}
+        />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

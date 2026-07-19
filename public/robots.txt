@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /thank-you/
+Disallow: /search/
+Disallow: /*?
+
+Sitemap: https://texasmedicalbillingcompany.com/sitemap-index.xml

@@ -1,0 +1,30 @@
+---
+/**
+ * Compliance/legal review flag. Visible ONLY in dev mode (or when
+ * PUBLIC_SHOW_REVIEW_FLAGS=true) so reviewers can see what needs
+ * verification without exposing flags to the public.
+ * Topics: hipaa | pricing | coding | medicare | medicaid | payer | legal |
+ * baa | security | offshore | appeals | timely-filing | reimbursement |
+ * patient-billing | debt-collection | operational
+ */
+interface Props {
+  topics: string[];
+  note?: string;
+}
+const { topics, note } = Astro.props;
+const show = import.meta.env.DEV || import.meta.env.PUBLIC_SHOW_REVIEW_FLAGS === 'true';
+---
+
+{
+  show && (
+    <div class="container-site my-4">
+      <div class="alert-warning" role="note">
+        <strong>⚠ Owner review required before launch</strong> — topics:{' '}
+        {topics.join(', ')}.{note && <span> {note}</span>}
+        <span class="block text-xs opacity-75">
+          This notice is visible in development only. See COMPLIANCE-REVIEW.md.
+        </span>
+      </div>
+    </div>
+  )
+}

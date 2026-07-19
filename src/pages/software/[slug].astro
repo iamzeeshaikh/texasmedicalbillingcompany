@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import FaqSection from '../../components/FaqSection.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import RelatedLinks from '../../components/RelatedLinks.astro';
+import { software, services, specialties } from '../../data';
+import { breadcrumbSchema, serviceSchema, faqSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+import { SOFTWARE_DISCLAIMER } from '../../config/site';
+
+export function getStaticPaths() {
+  return software.map((platform) => ({ params: { slug: platform.slug }, props: { platform } }));
+}
+
+const { platform } = Astro.props;
+const path = `/software/${platform.slug}/`;
+
+const serviceLinks = platform.relatedServices
+  .map((slug) => services.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .map((s) => ({ title: s.title, href: `/services/${s.slug}/`, badge: 'Service' }));
+
+const specialtyLinks = platform.relatedSpecialties
+  .map((slug) => specialties.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .map((s) => ({ title: `${s.specialtyName} Billing`, href: `/specialties/${s.slug}/`, badge: 'Specialty' }));
+
+const schema = [
+  breadcrumbSchema([
+    { name: 'Home', url: canonicalUrl('/') },
+    { name: 'Software', url: canonicalUrl('/software/') },
+    { name: platform.title },
+  ]),
+  serviceSchema({ name: platform.h1, description: platform.summary, url: canonicalUrl(path) }),
+  faqSchema(platform.faqs),
+];
+---
+
+<BaseLayout
+  title={platform.seoTitle}
+  description={platform.metaDescription}
+  canonicalPath={path}
+  noindex={!platform.indexable}
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Software Support"
+    h1={platform.h1}
+    lead={platform.summary}
+    breadcrumbs={[{ name: 'Software', href: '/software/' }, { name: platform.title }]}
+    showCtas
+  />
+
+  <section class="border-b border-slate-100 bg-sand-50 py-4">
+    <div class="container-site">
+      <p class="text-xs leading-relaxed text-slate-600">
+        <strong>Independence disclosure:</strong> {SOFTWARE_DISCLAIMER}
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-3">
+      <div class="prose-site lg:col-span-2">
+        {platform.intro.map((para) => <p class="text-lg">{para}</p>)}
+
+        <h2>Typical Billing Workflow in {platform.platformName}</h2>
+        <ul>
+          {platform.typicalWorkflow.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2>Implementation Considerations</h2>
+        <ul>
+          {platform.implementationConsiderations.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <h2>Training and Onboarding Needs</h2>
+        <ul>
+          {platform.trainingNeeds.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <aside class="space-y-6">
+        <div class="card">
+          <h2 class="h3">Data Access Controls</h2>
+          <ul class="mt-4 space-y-2.5">
+            {
+              platform.accessControls.map((item) => (
+                <li class="flex items-start gap-2 text-sm text-slate-600">
+                  <span aria-hidden="true" class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500" />
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+          <a href="/hipaa-and-security/" class="mt-4 block text-sm text-teal-700 underline">
+            Our full security framework →
+          </a>
+        </div>
+        <div class="card bg-navy-900 text-white">
+          <p class="font-bold">Using {platform.platformName}?</p>
+          <p class="mt-2 text-sm text-navy-200">
+            Get a billing review from a team that knows your platform’s workflows.
+          </p>
+          <a href="/free-billing-assessment/" class="btn-accent mt-4 w-full" data-analytics="cta_click" data-cta={`software_${platform.slug}`}>
+            Request a Free Billing Assessment
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <FaqSection faqs={platform.faqs} heading={`${platform.platformName} Billing FAQs`} />
+
+  <RelatedLinks
+    heading="Related Services and Specialties"
+    links={[...serviceLinks.slice(0, 3), ...specialtyLinks.slice(0, 3)]}
+    alt
+  />
+
+  <CtaSection heading={`Billing support inside ${platform.platformName}`} ctaId={`software_cta_${platform.slug}`} />
+</BaseLayout>

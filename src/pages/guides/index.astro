@@ -1,0 +1,72 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import { breadcrumbSchema, itemListSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+
+const guides = (await getCollection('guides')).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title),
+);
+
+const categories = [
+  { key: 'fundamentals', label: 'Billing Fundamentals', blurb: 'The complete-picture guides: how billing and the revenue cycle actually work.' },
+  { key: 'metrics', label: 'Metrics That Matter', blurb: 'The KPIs that measure revenue cycle health — defined, benchmarked, and made actionable.' },
+  { key: 'process', label: 'Process Guides', blurb: 'The workflows: verification, authorization, credentialing, scrubbing, posting, and follow-up.' },
+  { key: 'denials', label: 'Denials & Recovery', blurb: 'Why claims get denied and how disciplined operations respond.' },
+  { key: 'forms-documents', label: 'Forms & Documents', blurb: 'The paper trail decoded: claim forms, EOBs, remittances, and coordination rules.' },
+] as const;
+
+const schema = [
+  breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Guides' }]),
+  itemListSchema(guides.map((g) => ({ name: g.data.title, url: canonicalUrl(`/guides/${g.id}/`) }))),
+];
+---
+
+<BaseLayout
+  title="Medical Billing Knowledge Center | 27 Guides"
+  description="The knowledge center: complete guides to medical billing, RCM, claim lifecycles, KPIs, denials, and the forms behind them — free, sourced, and current."
+  canonicalPath="/guides/"
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Knowledge Center"
+    h1="The Medical Billing Knowledge Center"
+    lead="Cornerstone guides to how practice revenue actually works — written for physicians and administrators, sourced to official references, and free because informed practices make better clients."
+    breadcrumbs={[{ name: 'Guides' }]}
+  />
+
+  {
+    categories.map((cat, i) => {
+      const items = guides.filter((g) => g.data.category === cat.key);
+      if (items.length === 0) return null;
+      return (
+        <section class={`section ${i % 2 === 1 ? 'section-alt' : ''}`}>
+          <div class="container-site">
+            <h2 class="h2">{cat.label}</h2>
+            <p class="mt-2 max-w-2xl text-slate-600">{cat.blurb}</p>
+            <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {items.map((guide) => (
+                <a href={`/guides/${guide.id}/`} class="card-link">
+                  <p class="font-semibold text-navy-900">{guide.data.title}</p>
+                  <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                    {guide.data.summary.length > 130
+                      ? guide.data.summary.slice(0, 130) + '…'
+                      : guide.data.summary}
+                  </p>
+                  <p class="mt-3 text-sm font-semibold text-teal-700">Read the guide →</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    })
+  }
+
+  <CtaSection
+    heading="Guides explain it. The assessment measures it."
+    ctaId="guides_hub"
+  />
+</BaseLayout>

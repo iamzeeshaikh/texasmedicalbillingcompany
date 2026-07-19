@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import { locations } from '../../data';
+import { breadcrumbSchema, itemListSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+
+const regions = [...new Set(locations.map((l) => l.region))].sort();
+const byRegion = regions.map((region) => ({
+  region,
+  cities: locations
+    .filter((l) => l.region === region)
+    .sort((a, b) => a.cityName.localeCompare(b.cityName)),
+}));
+
+const schema = [
+  breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Locations' }]),
+  itemListSchema(
+    locations.map((l) => ({ name: `Medical Billing in ${l.cityName}`, url: canonicalUrl(`/locations/${l.slug}/`) })),
+  ),
+];
+---
+
+<BaseLayout
+  title="Texas Medical Billing Locations | 62 Cities Served Remotely"
+  description="Medical billing support for practices across Texas — Houston, Dallas, Austin, San Antonio, the Valley, West Texas, and 55+ more cities via secure remote workflows."
+  canonicalPath="/locations/"
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Texas Coverage"
+    h1="Medical Billing Services Across Texas"
+    lead="We serve practices statewide through secure remote billing workflows — every market below gets the same daily production discipline, with local payer-mix fluency built in. No fake local offices; just real coverage."
+    breadcrumbs={[{ name: 'Locations' }]}
+    showCtas
+  />
+
+  <section class="section">
+    <div class="container-site">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <h2 class="h2">Find Your Market</h2>
+        <label class="block w-full max-w-xs">
+          <span class="sr-only">Filter cities</span>
+          <input type="search" placeholder="Filter cities…" class="form-input" data-city-filter autocomplete="off" />
+        </label>
+      </div>
+
+      {
+        byRegion.map(({ region, cities }) => (
+          <div class="mt-10" data-region-block>
+            <h3 class="h3 border-b border-slate-200 pb-2">{region}</h3>
+            <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {cities.map((l) => (
+                <li data-name={l.cityName.toLowerCase()}>
+                  <a
+                    href={`/locations/${l.slug}/`}
+                    class="flex items-center justify-between rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-navy-900 hover:border-teal-300 hover:bg-teal-50/40"
+                  >
+                    {l.cityName}
+                    <span aria-hidden="true" class="text-teal-600">→</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+      <p class="mt-6 hidden text-sm text-slate-500" data-no-results>No cities match that filter.</p>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container-site prose-site max-w-3xl">
+      <h2>How Statewide Remote Coverage Works</h2>
+      <p>
+        Our team works inside your existing, client-authorized practice management system through
+        secure role-based access — the same model whether your practice is in downtown Houston or
+        rural East Texas. What changes by market is the knowledge we apply: payer mixes, Medicaid MCO
+        landscapes, workers’ comp intensity, and market dynamics differ across Texas, and our
+        location pages document how we approach each one.
+      </p>
+      <p>
+        Not in a city listed here? We serve practices throughout Texas — the list reflects our most
+        active markets, not a boundary. <a href="/contact/">Contact us</a> about any Texas location.
+      </p>
+    </div>
+  </section>
+
+  <CtaSection heading="Serving your corner of Texas" ctaId="locations_hub" />
+
+  <script>
+    const input = document.querySelector<HTMLInputElement>('[data-city-filter]');
+    const items = document.querySelectorAll<HTMLLIElement>('[data-name]');
+    const blocks = document.querySelectorAll<HTMLElement>('[data-region-block]');
+    const noResults = document.querySelector<HTMLElement>('[data-no-results]');
+    input?.addEventListener('input', () => {
+      const q = input.value.toLowerCase().trim();
+      let visible = 0;
+      items.forEach((li) => {
+        const match = !q || (li.dataset.name ?? '').includes(q);
+        li.classList.toggle('hidden', !match);
+        if (match) visible++;
+      });
+      blocks.forEach((block) => {
+        const any = block.querySelectorAll('li:not(.hidden)').length > 0;
+        block.classList.toggle('hidden', !any);
+      });
+      noResults?.classList.toggle('hidden', visible > 0);
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import FaqSection from '../../components/FaqSection.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import RelatedLinks from '../../components/RelatedLinks.astro';
+import { comparisons, services } from '../../data';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+
+export function getStaticPaths() {
+  return comparisons.map((comparison) => ({ params: { slug: comparison.slug }, props: { comparison } }));
+}
+
+const { comparison } = Astro.props;
+const path = `/compare/${comparison.slug}/`;
+
+const serviceLinks = comparison.relatedServices
+  .map((slug) => services.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .map((s) => ({ title: s.title, href: `/services/${s.slug}/`, badge: 'Service' }));
+
+const comparisonLinks = comparison.relatedComparisons
+  .map((slug) => comparisons.find((c) => c.slug === slug))
+  .filter((c) => !!c)
+  .map((c) => ({ title: c.title, href: `/compare/${c.slug}/`, badge: 'Comparison' }));
+
+const schema = [
+  breadcrumbSchema([
+    { name: 'Home', url: canonicalUrl('/') },
+    { name: 'Comparisons', url: canonicalUrl('/compare/') },
+    { name: comparison.title },
+  ]),
+  faqSchema(comparison.faqs),
+];
+---
+
+<BaseLayout
+  title={comparison.seoTitle}
+  description={comparison.metaDescription}
+  canonicalPath={path}
+  noindex={!comparison.indexable}
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Comparisons"
+    h1={comparison.h1}
+    lead={comparison.summary}
+    breadcrumbs={[{ name: 'Comparisons', href: '/compare/' }, { name: comparison.title }]}
+  />
+
+  <section class="section">
+    <div class="container-site">
+      <div class="prose-site max-w-3xl">
+        {comparison.intro.map((para) => <p class="text-lg">{para}</p>)}
+      </div>
+
+      <h2 class="h2 mt-12">Side-by-Side Comparison</h2>
+      <div class="mt-6 overflow-x-auto">
+        <table class="table-site min-w-[640px] border border-slate-200">
+          <thead>
+            <tr>
+              <th class="border border-slate-200 bg-navy-50 px-4 py-3 text-left font-semibold text-navy-900">Factor</th>
+              <th class="border border-slate-200 bg-navy-50 px-4 py-3 text-left font-semibold text-navy-900">{comparison.optionA}</th>
+              <th class="border border-slate-200 bg-navy-50 px-4 py-3 text-left font-semibold text-navy-900">{comparison.optionB}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              comparison.comparisonRows.map((row) => (
+                <tr>
+                  <td class="border border-slate-200 px-4 py-3 align-top font-medium text-navy-900">{row.factor}</td>
+                  <td class="border border-slate-200 px-4 py-3 align-top text-sm text-slate-600">{row.a}</td>
+                  <td class="border border-slate-200 px-4 py-3 align-top text-sm text-slate-600">{row.b}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-12 grid gap-8 md:grid-cols-2">
+        <div class="card">
+          <h2 class="h3">When {comparison.optionA} Fits</h2>
+          <ul class="mt-4 space-y-2.5">
+            {
+              comparison.whenOptionA.map((item) => (
+                <li class="flex items-start gap-2 text-sm text-slate-600">
+                  <span aria-hidden="true" class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-navy-500" />
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="card">
+          <h2 class="h3">When {comparison.optionB} Fits</h2>
+          <ul class="mt-4 space-y-2.5">
+            {
+              comparison.whenOptionB.map((item) => (
+                <li class="flex items-start gap-2 text-sm text-slate-600">
+                  <span aria-hidden="true" class="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500" />
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="prose-site mt-12 max-w-3xl">
+        <h2>Trade-offs Worth Understanding</h2>
+        <ul>
+          {comparison.tradeoffs.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <FaqSection faqs={comparison.faqs} />
+
+  <RelatedLinks
+    heading="Related Services and Comparisons"
+    links={[...serviceLinks.slice(0, 3), ...comparisonLinks.slice(0, 3)]}
+    alt
+  />
+
+  <CtaSection
+    heading="Want this decision run on your actual numbers?"
+    body="The free billing assessment applies these frameworks to your practice's real data — costs, KPIs, and fit — with the reasoning shown."
+    ctaId={`compare_cta_${comparison.slug}`}
+  />
+</BaseLayout>

@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaSection from '../components/CtaSection.astro';
+import ReviewFlag from '../components/ReviewFlag.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+
+const safeguards = [
+  {
+    title: 'Access controls and role-based access',
+    text: 'Every team member accesses client systems through named individual accounts — never shared credentials — with permissions scoped to the billing functions their role requires under minimum-necessary principles.',
+  },
+  {
+    title: 'Multi-factor authentication',
+    text: 'MFA is required on our internal systems and used on client systems wherever the platform supports it; where a client platform lacks MFA, compensating controls are documented.',
+  },
+  {
+    title: 'Client-authorized systems only',
+    text: 'We work within systems the client authorizes, under the client’s user management, subject to each platform’s access and licensing requirements — your system’s audit logs record our activity alongside your own staff’s.',
+  },
+  {
+    title: 'Minimum necessary access',
+    text: 'Access requests specify the functions and data scopes each role needs; access beyond billing necessity is neither requested nor accepted.',
+  },
+  {
+    title: 'Staff training',
+    text: 'Team members complete privacy and security training at onboarding and on a recurring schedule, with training records maintained; role changes trigger access review.',
+  },
+  {
+    title: 'Device security',
+    text: 'Work is performed on managed devices under documented policies: disk encryption, screen locking, endpoint protection, and prohibition of PHI storage on local devices outside approved workflows.',
+  },
+  {
+    title: 'Audit trails',
+    text: 'Client-system activity is traceable through the platform’s native audit logging; our internal systems maintain their own access logs. We treat auditable work as a feature, not a burden.',
+  },
+  {
+    title: 'Secure communication',
+    text: 'PHI moves only through approved channels — client systems, encrypted transfer, secure messaging — never through ordinary email attachments or consumer file-sharing.',
+  },
+  {
+    title: 'Business Associate Agreements',
+    text: 'A BAA is executed with every client before any PHI access, and with any subcontractor or vendor whose services touch PHI — the agreement chain is complete or the work does not start.',
+  },
+  {
+    title: 'Vendor management',
+    text: 'Vendors with PHI access are inventoried, contracted under BAAs, and reviewed; vendors without a business need for PHI do not receive it.',
+  },
+  {
+    title: 'Incident response',
+    text: 'A documented incident response process covers detection, containment, assessment, client notification, and remediation — with client notification obligations honored per the BAA and applicable law.',
+  },
+  {
+    title: 'Data retention',
+    text: 'Records are retained per client agreements and applicable requirements, and returned or destroyed at engagement end per the BAA’s terms — your data remains yours throughout.',
+  },
+  {
+    title: 'Secure onboarding and offboarding',
+    text: 'Access is provisioned through a documented checklist at engagement start and revoked through the same discipline at role changes and engagement end — orphaned accounts are a failure mode we design against.',
+  },
+  {
+    title: 'Workforce location and disclosure',
+    text: 'Where any work is performed outside the United States, that fact, the functions involved, and the governing controls are disclosed contractually before engagement — clients with US-only requirements should state them at scoping, and we will scope accordingly or decline honestly.',
+  },
+];
+---
+
+<BaseLayout
+  title="HIPAA & Security | Our Data Protection Framework"
+  description="How Texas Medical Billing Company protects PHI: access controls, BAAs, training, device security, audit trails, and incident response — documented plainly."
+  canonicalPath="/hipaa-and-security/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'HIPAA & Security' }])]}
+>
+  <ReviewFlag
+    topics={['hipaa', 'security', 'baa', 'offshore', 'legal']}
+    note="Before launch, this page must be reviewed by a qualified US healthcare compliance professional and updated to reflect the company's actual systems, contracts, vendors, staff, and procedures."
+  />
+
+  <PageHero
+    eyebrow="HIPAA & Security"
+    h1="How We Protect Patient Information"
+    lead="Remote billing deserves specific security answers, not badge graphics. This page documents our safeguards framework — and invites your compliance reviewer's scrutiny."
+    breadcrumbs={[{ name: 'HIPAA & Security' }]}
+  />
+
+  <section class="border-b border-slate-100 bg-sand-50 py-4">
+    <div class="container-site">
+      <p class="text-xs leading-relaxed text-slate-600">
+        <strong>An honest note about “HIPAA certification”:</strong> HIPAA does not provide a
+        government certification for billing companies — vendors displaying “HIPAA Certified” badges
+        are displaying marketing, not credentials. What exists instead is compliance: safeguards
+        implemented, documented, and contractually committed. That is what this page describes.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-site">
+      <h2 class="h2">Our Safeguards Framework</h2>
+      <p class="mt-4 max-w-3xl text-slate-600">
+        The framework below reflects HIPAA-aligned administrative, physical, and technical
+        safeguards as we implement them. Every item is intended to be verifiable in diligence — ask
+        for the documentation.
+      </p>
+      <div class="mt-8 grid gap-5 md:grid-cols-2">
+        {
+          safeguards.map((item) => (
+            <div class="card">
+              <h3 class="font-semibold text-navy-900">{item.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">{item.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container-site prose-site max-w-3xl">
+      <h2>For Your Compliance Reviewer</h2>
+      <p>
+        We welcome security diligence and answer it specifically: access architecture, BAA
+        templates, training records structure, device policy summaries, and incident response
+        outlines are available to prospective clients under appropriate confidentiality. If your
+        organization runs vendor security assessments, send the questionnaire — a billing partner
+        that resists security scrutiny is answering your real question.
+      </p>
+      <p>
+        <strong>Owner review notice:</strong> statements on this page describe our intended and
+        contractually committed safeguards framework. Before relying on any specific control for
+        your own compliance obligations, verify current implementation details during scoping — we
+        will document them in the agreement rather than leave them as website prose.
+      </p>
+    </div>
+  </section>
+
+  <CtaSection
+    heading="Bring your hardest security questions"
+    body="Scoping conversations include security architecture on request — with documentation, not slogans."
+    ctaId="security_cta"
+  />
+</BaseLayout>

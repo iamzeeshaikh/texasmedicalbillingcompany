@@ -1,0 +1,89 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Analytics from '../components/Analytics.astro';
+import { SITE, ANALYTICS } from '../config/site';
+import { canonicalUrl } from '../lib/url';
+import { graph, organizationSchema, websiteSchema, webPageSchema } from '../lib/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path used for the canonical URL; defaults to the current pathname. */
+  canonicalPath?: string;
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+  ogImage?: string;
+  /** Extra JSON-LD nodes merged into the page @graph. */
+  schema?: (Record<string, unknown> | null)[];
+  datePublished?: string;
+  dateModified?: string;
+}
+
+const {
+  title,
+  description,
+  canonicalPath = Astro.url.pathname,
+  noindex = false,
+  ogType = 'website',
+  ogImage = '/images/og-default.svg',
+  schema = [],
+  datePublished,
+  dateModified,
+} = Astro.props;
+
+const canonical = canonicalUrl(canonicalPath);
+const jsonLd = graph(
+  organizationSchema(),
+  websiteSchema(),
+  webPageSchema({ url: canonical, title, description, datePublished, dateModified }),
+  ...schema,
+);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} Blog`} href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(ogImage, SITE.url).href} />
+    <meta property="og:locale" content={SITE.locale} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, SITE.url).href} />
+
+    {ANALYTICS.gscVerification && (
+      <meta name="google-site-verification" content={ANALYTICS.gscVerification} />
+    )}
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <Header />
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+    <Analytics />
+  </body>
+</html>

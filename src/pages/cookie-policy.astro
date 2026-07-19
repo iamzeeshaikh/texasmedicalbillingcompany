@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import ReviewFlag from '../components/ReviewFlag.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+import { CONTACT } from '../config/site';
+---
+
+<BaseLayout
+  title="Cookie Policy | Texas Medical Billing Company"
+  description="How this website uses cookies and similar technologies: analytics, preferences, and your control options."
+  canonicalPath="/cookie-policy/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Cookie Policy' }])]}
+>
+  <ReviewFlag topics={['legal']} note="Update this policy to match the analytics/tracking tools actually enabled at launch." />
+
+  <PageHero h1="Cookie Policy" breadcrumbs={[{ name: 'Cookie Policy' }]} />
+
+  <section class="section">
+    <div class="container-narrow prose-site">
+      <p class="text-sm text-slate-500">Last updated: July 19, 2026</p>
+
+      <h2>What Cookies Are</h2>
+      <p>
+        Cookies are small files stored by your browser that help websites function and understand
+        usage. Similar technologies (local storage, pixels) serve comparable purposes; this policy
+        covers them together.
+      </p>
+
+      <h2>How This Site Uses Them</h2>
+      <p>
+        <strong>Essential:</strong> minimal storage needed for site function (e.g., remembering a
+        dismissed notice). These do not track you across sites.
+      </p>
+      <p>
+        <strong>Analytics (when enabled):</strong> we may use Google Analytics 4 and Microsoft
+        Clarity to understand aggregate site usage — pages visited, traffic sources, and interaction
+        patterns — configured with privacy-conscious settings including IP anonymization where
+        supported. Analytics identifiers are set only when these tools are enabled by
+        configuration; this site sets no analytics cookies when they are not.
+      </p>
+      <p>
+        <strong>Advertising:</strong> this site does not currently use advertising cookies.
+        <!-- OWNER: update if call tracking or ad platforms are added. -->
+      </p>
+
+      <h2>Your Choices</h2>
+      <ul>
+        <li>Browser settings let you block or delete cookies site-by-site or globally</li>
+        <li>Google provides an <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener nofollow">Analytics opt-out browser add-on</a></li>
+        <li>Most browsers offer private/incognito modes that discard cookies after each session</li>
+      </ul>
+      <p>
+        Blocking analytics cookies does not affect your ability to use this site.
+      </p>
+
+      <h2>Questions</h2>
+      <p>
+        Contact <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> with questions about this
+        policy.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,94 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import CtaSection from '../../../components/CtaSection.astro';
+import { breadcrumbSchema, itemListSchema } from '../../../lib/schema';
+import { canonicalUrl } from '../../../lib/url';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const categories = [...new Set(posts.map((p) => p.data.category))];
+  return categories.map((category) => ({
+    params: { category },
+    props: {
+      posts: posts
+        .filter((p) => p.data.category === category)
+        .sort((a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf()),
+    },
+  }));
+}
+
+const { category } = Astro.params;
+const { posts } = Astro.props;
+
+const meta: Record<string, { label: string; description: string }> = {
+  'revenue-cycle': {
+    label: 'Revenue Cycle',
+    description: 'Articles on claims, denials, AR, and the operational mechanics of getting practices paid.',
+  },
+  'practice-management': {
+    label: 'Practice Management',
+    description: 'Articles on running the business of a practice: staffing, growth, vendors, and decisions.',
+  },
+  'payer-news': {
+    label: 'Payer News',
+    description: 'Analysis of payer policy shifts and what they mean operationally for Texas practices.',
+  },
+  'texas-healthcare': {
+    label: 'Texas Healthcare',
+    description: 'The Texas-specific layer: Medicaid, markets, regulation, and the state’s practice landscape.',
+  },
+};
+
+const info = meta[category!] ?? { label: category, description: '' };
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const path = `/blog/category/${category}/`;
+const schema = [
+  breadcrumbSchema([
+    { name: 'Home', url: canonicalUrl('/') },
+    { name: 'Blog', url: canonicalUrl('/blog/') },
+    { name: info.label },
+  ]),
+  itemListSchema(posts.map((p) => ({ name: p.data.title, url: canonicalUrl(`/blog/${p.id}/`) }))),
+];
+---
+
+<BaseLayout
+  title={`${info.label} Articles | Texas Medical Billing Company Blog`}
+  description={`${info.description} Browse all ${info.label.toLowerCase()} articles from Texas Medical Billing Company.`}
+  canonicalPath={path}
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Blog Category"
+    h1={`${info.label} Articles`}
+    lead={info.description}
+    breadcrumbs={[{ name: 'Blog', href: '/blog/' }, { name: info.label }]}
+  />
+
+  <section class="section">
+    <div class="container-site">
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {
+          posts.map((post) => (
+            <a href={`/blog/${post.id}/`} class="card-link flex flex-col">
+              <p class="font-semibold text-navy-900">{post.data.title}</p>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
+                {post.data.summary.length > 140 ? post.data.summary.slice(0, 140) + '…' : post.data.summary}
+              </p>
+              <p class="mt-4 text-xs text-slate-400">{fmt(post.data.publishedDate)}</p>
+            </a>
+          ))
+        }
+      </div>
+      <p class="mt-8">
+        <a href="/blog/" class="text-sm font-semibold text-teal-700 underline">← All articles</a>
+      </p>
+    </div>
+  </section>
+
+  <CtaSection ctaId={`blog_category_${category}`} />
+</BaseLayout>

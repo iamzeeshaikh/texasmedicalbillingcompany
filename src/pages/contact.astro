@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import LeadForm from '../components/forms/LeadForm.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+import { CONTACT } from '../config/site';
+---
+
+<BaseLayout
+  title="Contact Us | Texas Medical Billing Company"
+  description="Contact Texas Medical Billing Company: business inquiries, billing assessments, and questions about our services for Texas practices."
+  canonicalPath="/contact/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Contact' }])]}
+>
+  <PageHero
+    eyebrow="Contact"
+    h1="Contact Texas Medical Billing Company"
+    lead="Business inquiries answered within one business day. Straight questions welcome — including the hard ones."
+    breadcrumbs={[{ name: 'Contact' }]}
+  />
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-3">
+      <div class="lg:col-span-2">
+        <LeadForm
+          formId="contact"
+          heading="Send a Message"
+          submitLabel="Send Message"
+          fields={[
+            { name: 'name', label: 'Your name', type: 'text', required: true },
+            { name: 'practice', label: 'Practice or organization', type: 'text' },
+            { name: 'email', label: 'Work email', type: 'email', required: true },
+            { name: 'phone', label: 'Phone', type: 'tel' },
+            {
+              name: 'topic',
+              label: 'What is this about?',
+              type: 'select',
+              required: true,
+              options: [
+                'Billing services inquiry',
+                'Free billing assessment',
+                'Accounts receivable / denials',
+                'Credentialing',
+                'Pricing question',
+                'Partnership or vendor inquiry',
+                'Other',
+              ],
+            },
+            {
+              name: 'message',
+              label: 'Your message',
+              type: 'textarea',
+              required: true,
+              placeholder: 'How can we help? (Please do not include any patient information.)',
+            },
+          ]}
+        />
+      </div>
+
+      <aside class="space-y-6">
+        <div class="card">
+          <h2 class="h3">Direct Contact</h2>
+          <dl class="mt-4 space-y-3 text-sm">
+            <div>
+              <dt class="font-semibold text-navy-900">Email</dt>
+              <dd class="mt-0.5">
+                <a href={`mailto:${CONTACT.email}`} class="text-teal-700 underline" data-analytics="email_click">
+                  {CONTACT.email}
+                </a>
+              </dd>
+            </div>
+            {
+              !CONTACT.isPlaceholder && CONTACT.phoneDisplay && (
+                <div>
+                  <dt class="font-semibold text-navy-900">Phone</dt>
+                  <dd class="mt-0.5">
+                    <a href={`tel:${CONTACT.phone}`} class="text-teal-700 underline" data-analytics="phone_click">
+                      {CONTACT.phoneDisplay}
+                    </a>
+                  </dd>
+                </div>
+              )
+            }
+            <div>
+              <dt class="font-semibold text-navy-900">Hours</dt>
+              <dd class="mt-0.5 text-slate-600">{CONTACT.hours}</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-navy-900">Service area</dt>
+              <dd class="mt-0.5 text-slate-600">
+                Practices throughout Texas, served through secure remote workflows.
+              </dd>
+            </div>
+          </dl>
+        </div>
+        <div class="card bg-navy-900 text-white">
+          <p class="font-bold">Ready for specifics?</p>
+          <p class="mt-2 text-sm text-navy-200">
+            The free billing assessment turns a conversation into measured findings.
+          </p>
+          <a href="/free-billing-assessment/" class="btn-accent mt-4 w-full" data-analytics="cta_click" data-cta="contact_sidebar">
+            Request a Free Billing Assessment
+          </a>
+        </div>
+        <div class="alert-info text-xs">
+          <strong>Patients:</strong> if you have a question about a bill from your doctor’s office,
+          please contact your provider’s office directly — as a billing service we cannot discuss
+          account details except through your provider’s established channels.
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

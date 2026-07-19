@@ -1,0 +1,197 @@
+---
+import Logo from './Logo.astro';
+import { MAIN_NAV } from '../config/nav';
+import { CTAS } from '../config/site';
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+---
+
+<header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
+  <div class="container-site flex h-16 items-center justify-between gap-4">
+    <a href="/" class="shrink-0" aria-label="Texas Medical Billing Company — Home">
+      <Logo />
+    </a>
+
+    <!-- Desktop navigation -->
+    <nav aria-label="Main navigation" class="hidden lg:block" data-desktop-nav>
+      <ul class="flex items-center gap-1">
+        {
+          MAIN_NAV.map((item) =>
+            item.columns ? (
+              <li class="relative" data-menu-item>
+                <button
+                  type="button"
+                  class={`flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium hover:bg-navy-50 hover:text-navy-900 ${isActive(item.href) ? 'text-navy-900' : 'text-slate-600'}`}
+                  aria-expanded="false"
+                  data-menu-button
+                >
+                  {item.label}
+                  <svg aria-hidden="true" class="h-3.5 w-3.5 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.22 7.22a.75.75 0 0 1 1.06 0L10 10.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 8.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+                <div
+                  class="invisible absolute left-1/2 top-full z-50 w-[44rem] -translate-x-1/2 pt-2 opacity-0 transition-opacity duration-100 data-open:visible data-open:opacity-100"
+                  data-menu-panel
+                >
+                  <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-(--shadow-raised)">
+                    <div class="grid grid-cols-3 gap-6">
+                      {item.columns.map((col) => (
+                        <div>
+                          <p class="eyebrow mb-3">{col.heading}</p>
+                          <ul class="space-y-1.5">
+                            {col.links.map((link) => (
+                              <li>
+                                <a
+                                  href={link.href}
+                                  class="block rounded px-2 py-1 text-sm text-slate-600 hover:bg-navy-50 hover:text-navy-900"
+                                >
+                                  {link.label}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                    <div class="mt-5 border-t border-slate-100 pt-4">
+                      <a href={item.href} class="text-sm font-semibold text-teal-700 hover:text-teal-800">
+                        {item.hubLabel} →
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ) : (
+              <li>
+                <a
+                  href={item.href}
+                  class={`rounded-md px-3 py-2 text-sm font-medium hover:bg-navy-50 hover:text-navy-900 ${isActive(item.href) ? 'text-navy-900' : 'text-slate-600'}`}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ),
+          )
+        }
+      </ul>
+    </nav>
+
+    <div class="hidden items-center gap-3 lg:flex">
+      <a href={CTAS.primary.href} class="btn-accent" data-analytics="cta_click" data-cta="header_primary">
+        {CTAS.primary.label}
+      </a>
+    </div>
+
+    <!-- Mobile menu button -->
+    <button
+      type="button"
+      class="rounded-md p-2 text-navy-800 hover:bg-navy-50 lg:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-mobile-toggle
+    >
+      <span class="sr-only">Open main menu</span>
+      <svg aria-hidden="true" class="h-6 w-6" data-icon-open fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+      <svg aria-hidden="true" class="hidden h-6 w-6" data-icon-close fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile navigation -->
+  <nav id="mobile-menu" class="hidden border-t border-slate-200 bg-white lg:hidden" aria-label="Mobile navigation">
+    <div class="container-site max-h-[calc(100vh-4rem)] space-y-1 overflow-y-auto py-4">
+      {
+        MAIN_NAV.map((item) =>
+          item.columns ? (
+            <details class="group">
+              <summary class="flex cursor-pointer list-none items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium text-navy-900 hover:bg-navy-50">
+                {item.label}
+                <svg aria-hidden="true" class="h-4 w-4 text-slate-400 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.22 7.22a.75.75 0 0 1 1.06 0L10 10.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 8.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                </svg>
+              </summary>
+              <div class="space-y-3 px-3 pb-3 pt-1">
+                {item.columns.map((col) => (
+                  <div>
+                    <p class="eyebrow mb-1.5 text-[0.65rem]">{col.heading}</p>
+                    <ul>
+                      {col.links.map((link) => (
+                        <li>
+                          <a href={link.href} class="block rounded px-2 py-1.5 text-sm text-slate-600 hover:bg-navy-50">
+                            {link.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                <a href={item.href} class="block px-2 text-sm font-semibold text-teal-700">
+                  {item.hubLabel} →
+                </a>
+              </div>
+            </details>
+          ) : (
+            <a href={item.href} class="block rounded-md px-3 py-2.5 text-sm font-medium text-navy-900 hover:bg-navy-50">
+              {item.label}
+            </a>
+          ),
+        )
+      }
+      <div class="space-y-2 px-3 pt-3">
+        <a href={CTAS.primary.href} class="btn-accent w-full" data-analytics="cta_click" data-cta="mobile_primary">
+          {CTAS.primary.label}
+        </a>
+        <a href={CTAS.secondary.href} class="btn-secondary w-full">
+          {CTAS.secondary.label}
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Desktop mega menus: click to toggle, Escape / outside click to close.
+  const menuItems = document.querySelectorAll<HTMLElement>('[data-menu-item]');
+  function closeAll(except?: HTMLElement) {
+    menuItems.forEach((mi) => {
+      if (mi === except) return;
+      mi.querySelector('[data-menu-button]')?.setAttribute('aria-expanded', 'false');
+      mi.querySelector('[data-menu-panel]')?.removeAttribute('data-open');
+    });
+  }
+  menuItems.forEach((mi) => {
+    const btn = mi.querySelector<HTMLButtonElement>('[data-menu-button]');
+    const panel = mi.querySelector<HTMLElement>('[data-menu-panel]');
+    if (!btn || !panel) return;
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      closeAll(mi);
+      btn.setAttribute('aria-expanded', String(!open));
+      panel.toggleAttribute('data-open', !open);
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if (!(e.target as HTMLElement).closest('[data-menu-item]')) closeAll();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAll();
+  });
+
+  // Mobile menu toggle
+  const toggle = document.querySelector<HTMLButtonElement>('[data-mobile-toggle]');
+  const mobileMenu = document.getElementById('mobile-menu');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    mobileMenu?.classList.toggle('hidden', open);
+    toggle.querySelector('[data-icon-open]')?.classList.toggle('hidden', !open);
+    toggle.querySelector('[data-icon-close]')?.classList.toggle('hidden', open);
+  });
+</script>

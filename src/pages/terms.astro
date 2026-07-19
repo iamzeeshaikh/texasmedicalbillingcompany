@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import ReviewFlag from '../components/ReviewFlag.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+import { SITE, DISCLAIMER } from '../config/site';
+---
+
+<BaseLayout
+  title="Terms & Conditions | Texas Medical Billing Company"
+  description="Terms and conditions for use of texasmedicalbillingcompany.com, including educational-content disclaimers and limitations."
+  canonicalPath="/terms/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Terms & Conditions' }])]}
+>
+  <ReviewFlag topics={['legal']} note="Legal counsel must review these terms before launch." />
+
+  <PageHero h1="Terms and Conditions" breadcrumbs={[{ name: 'Terms & Conditions' }]} />
+
+  <section class="section">
+    <div class="container-narrow prose-site">
+      <p class="text-sm text-slate-500">Last updated: July 19, 2026</p>
+
+      <h2>Acceptance</h2>
+      <p>
+        By using {SITE.domain} (the “Site”), you agree to these terms. If you do not agree, please
+        do not use the Site. Services we provide to clients are governed by separate written
+        service agreements, not by these website terms.
+      </p>
+
+      <h2>Educational Content — No Professional Advice</h2>
+      <p>{DISCLAIMER}</p>
+      <p>
+        Content about coding, payers, pricing, compliance, and legal topics is general education
+        reflecting information believed accurate at publication. Rules change frequently and vary
+        by circumstance; decisions should be made with qualified professionals using current
+        official sources. Nothing on this Site creates a client relationship or constitutes a
+        commitment to provide services.
+      </p>
+
+      <h2>No Patient Information</h2>
+      <p>
+        The Site’s forms and email addresses are for business communication only. Do not transmit
+        protected health information through them. We assume no obligations with respect to
+        unsolicited PHI submitted through the Site and will delete it upon identification.
+      </p>
+
+      <h2>Intellectual Property</h2>
+      <p>
+        Site content is owned by {SITE.name} or its licensors. You may view, share links to, and
+        quote brief excerpts of Site content with attribution; wholesale reproduction requires
+        written permission. Third-party names and trademarks (payers, software platforms) belong to
+        their owners and are used for identification only — no affiliation or endorsement is implied.
+      </p>
+
+      <h2>Third-Party Links</h2>
+      <p>
+        Links to external resources are provided for reference. We do not control and are not
+        responsible for third-party content, and linking does not imply endorsement.
+      </p>
+
+      <h2>Disclaimer of Warranties and Limitation of Liability</h2>
+      <p>
+        The Site is provided “as is” without warranties of any kind, express or implied. To the
+        fullest extent permitted by law, {SITE.name} shall not be liable for any damages arising
+        from use of the Site or reliance on its content. Some jurisdictions do not allow certain
+        limitations; in such jurisdictions, our liability is limited to the fullest extent
+        permitted.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        We may update these terms; the “last updated” date reflects the current version. Continued
+        use after changes constitutes acceptance.
+      </p>
+
+      <h2>Governing Law</h2>
+      <p>
+        These terms are governed by the laws of the State of Texas, without regard to conflict of
+        law principles. <!-- OWNER: counsel to confirm venue/jurisdiction language. -->
+      </p>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,31 @@
+---
+import { CTAS } from '../config/site';
+
+interface Props {
+  heading?: string;
+  body?: string;
+  primary?: { label: string; href: string };
+  secondary?: { label: string; href: string };
+  ctaId?: string;
+}
+const {
+  heading = 'Talk through your billing workflow with our team',
+  body = 'Request a free billing assessment and get a clear, no-obligation review of your claims process, denial patterns, and accounts receivable.',
+  primary = CTAS.primary,
+  secondary = CTAS.secondary,
+  ctaId = 'section_cta',
+} = Astro.props;
+---
+
+<section class="section-navy">
+  <div class="container-site py-14 text-center md:py-16">
+    <h2 class="h2 text-white">{heading}</h2>
+    <p class="mx-auto mt-4 max-w-2xl text-navy-200">{body}</p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a href={primary.href} class="btn-accent" data-analytics="cta_click" data-cta={ctaId}>
+        {primary.label}
+      </a>
+      <a href={secondary.href} class="btn-ghost-light">{secondary.label}</a>
+    </div>
+  </div>
+</section>

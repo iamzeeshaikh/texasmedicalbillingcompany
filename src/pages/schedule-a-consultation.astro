@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import LeadForm from '../components/forms/LeadForm.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+---
+
+<BaseLayout
+  title="Schedule a Consultation | Texas Medical Billing Company"
+  description="Schedule a consultation with our billing team: a direct conversation about your practice's revenue cycle — questions answered, no pitch theater."
+  canonicalPath="/schedule-a-consultation/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Schedule a Consultation' }])]}
+>
+  <PageHero
+    eyebrow="Consultation"
+    h1="Schedule a Consultation"
+    lead="Thirty minutes with someone who does this work daily — your questions, straight answers, and an honest read on whether we can help."
+    breadcrumbs={[{ name: 'Schedule a Consultation' }]}
+  />
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-2">
+      <div class="prose-site">
+        <h2>What a Consultation Covers</h2>
+        <p>
+          Whatever you bring: a denial pattern you cannot crack, a biller resignation you are
+          absorbing, a growth plan that needs billing capacity, a vendor relationship you are
+          questioning, or just the "is our billing normal?" conversation every owner eventually
+          wants. You will talk with billing operations people, not commissioned closers.
+        </p>
+        <h2>What It Isn’t</h2>
+        <p>
+          Not a scripted pitch, not a pressure sequence, and not a commitment. If your situation
+          needs measured data before advice means anything, we will say so and suggest the
+          <a href="/free-billing-assessment/">free assessment</a>. If your situation doesn’t need
+          us at all, we will say that too — it costs us thirty minutes and buys us credibility we
+          value more.
+        </p>
+        <!-- Scheduling integration placeholder: replace this form flow with an
+             embedded scheduler (e.g., a calendar booking tool) when the owner
+             configures one. Set CONTACT.consultationUrl accordingly. -->
+      </div>
+
+      <div>
+        <LeadForm
+          formId="consultation-request"
+          heading="Request a Consultation"
+          submitLabel="Request Consultation"
+          successMessage="Thank you — we’ll reply within one business day with available times."
+          fields={[
+            { name: 'name', label: 'Your name', type: 'text', required: true },
+            { name: 'practice', label: 'Practice or organization', type: 'text', required: true },
+            { name: 'email', label: 'Work email', type: 'email', required: true },
+            { name: 'phone', label: 'Phone', type: 'tel', required: true },
+            {
+              name: 'timing',
+              label: 'Preferred timing',
+              type: 'select',
+              options: ['Mornings', 'Afternoons', 'Whatever is soonest'],
+            },
+            {
+              name: 'topics',
+              label: 'What would you like to discuss?',
+              type: 'textarea',
+              required: true,
+              placeholder: 'A sentence or two so the right person joins the call. (No patient information, please.)',
+            },
+          ]}
+        />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

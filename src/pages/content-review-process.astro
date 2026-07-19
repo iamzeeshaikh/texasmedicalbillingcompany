@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+---
+
+<BaseLayout
+  title="Content Review Process | Texas Medical Billing Company"
+  description="How content on this site is reviewed: fact-checking practice, compliance flags, review dates, and the professional-review requirements for sensitive topics."
+  canonicalPath="/content-review-process/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Content Review Process' }])]}
+>
+  <PageHero
+    eyebrow="Editorial Standards"
+    h1="Content Review Process"
+    lead="How content gets checked before and after publication — including the topics that require professional review."
+    breadcrumbs={[{ name: 'Content Review Process' }]}
+  />
+
+  <section class="section">
+    <div class="container-narrow prose-site">
+      <h2>Pre-Publication Review</h2>
+      <p>
+        Every page passes editorial review against our <a href="/editorial-policy/">editorial
+        policy</a> before publication: claims checked against the honesty rules, industry figures
+        verified as attributable to published references, disclaimers present where topics require
+        them, and internal links reviewed for accuracy. Automated build-time checks enforce the
+        mechanical layer — metadata completeness, duplicate titles, and required disclaimers on
+        payer and software content.
+      </p>
+
+      <h2>Flagged-Topic Professional Review</h2>
+      <p>
+        Content touching the following topics carries an internal review flag requiring
+        qualified-professional review before final publication approval: HIPAA and security claims,
+        pricing statements, coding guidance, Medicare and Medicaid specifics, payer policies, legal
+        and contract topics, Business Associate Agreements, offshore staffing disclosures, claims
+        appeals procedures, timely filing rules, reimbursement statements, patient billing, and debt
+        collection practices. Flags are visible in our development environment and tracked to
+        resolution.
+      </p>
+
+      <h2>Fact-Checking Practice</h2>
+      <ul>
+        <li>Regulatory statements traced to official sources (CMS, TMHP, TDI, federal rules) at writing</li>
+        <li>Payer descriptions checked against the payer’s own published provider materials</li>
+        <li>Industry ranges attributed as observations, with hedged language matching evidence strength</li>
+        <li>City and market facts limited to well-established, verifiable information</li>
+      </ul>
+
+      <h2>Post-Publication Review</h2>
+      <p>
+        Guides carry published and reviewed dates; material rule changes (annual code updates, payer
+        policy shifts, regulation changes) trigger content review of affected pages. Reader-reported
+        issues follow the <a href="/corrections-policy/">corrections policy</a>. Educational content
+        about a changing industry is never “done” — the review process is a cycle, not a gate.
+      </p>
+
+      <h2>Reviewer Profiles</h2>
+      <p>
+        Named reviewer credentials will appear on content as real, consenting professionals join the
+        review process. We do not publish invented reviewer identities; until individual profiles
+        exist, review is performed under the company editorial process described here.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+import { CONTACT } from '../config/site';
+---
+
+<BaseLayout
+  title="Corrections Policy | Texas Medical Billing Company"
+  description="How to report errors on this site and how we handle corrections: acknowledgment, correction standards, and transparency practices."
+  canonicalPath="/corrections-policy/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Corrections Policy' }])]}
+>
+  <PageHero
+    eyebrow="Editorial Standards"
+    h1="Corrections Policy"
+    lead="We publish about a complicated, changing industry — errors will happen, and this is how we handle them."
+    breadcrumbs={[{ name: 'Corrections Policy' }]}
+  />
+
+  <section class="section">
+    <div class="container-narrow prose-site">
+      <h2>Reporting an Error</h2>
+      <p>
+        Found something wrong — a factual error, an outdated rule, a broken source link, a claim
+        that doesn’t hold up? Email{' '}
+        <a href={`mailto:${CONTACT.email}?subject=Content%20correction`}>{CONTACT.email}</a> with
+        the page address and the issue. Reports from readers, competitors, payers, and critics are
+        all welcome; being correctable is part of being credible.
+      </p>
+
+      <h2>How We Respond</h2>
+      <ul>
+        <li><strong>Acknowledgment:</strong> correction reports receive a reply confirming receipt and review.</li>
+        <li><strong>Verification:</strong> we check the claim against current official sources.</li>
+        <li><strong>Correction:</strong> confirmed errors are fixed promptly; affected guide pages get updated review dates.</li>
+        <li><strong>Material errors:</strong> where an error was substantive enough to mislead decisions (not a typo), the corrected page notes the correction.</li>
+        <li><strong>Systemic fixes:</strong> errors that reveal process gaps trigger review of related content and, where needed, changes to our review process.</li>
+      </ul>
+
+      <h2>What Isn’t a Correction</h2>
+      <p>
+        Differences of professional opinion, disagreements with our disclosed perspective as a
+        billing company, and requests to soften accurate statements are engaged honestly but handled
+        as feedback rather than corrections. Rules that changed after our stated review date are
+        updates, not errors — though we appreciate the prompt to update.
+      </p>
+
+      <h2>Time-Sensitivity Reminder</h2>
+      <p>
+        Even corrected content ages: coding rules update annually, payer policies shift constantly,
+        and regulations evolve. Review dates tell you when content was last verified; official
+        sources tell you what is true today.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

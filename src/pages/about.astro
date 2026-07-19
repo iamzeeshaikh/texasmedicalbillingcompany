@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaSection from '../components/CtaSection.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { canonicalUrl } from '../lib/url';
+
+const values = [
+  {
+    title: 'Clear communication',
+    text: 'Plain language in reporting, honest answers to hard questions, and problems surfaced early — because surprises are a service failure.',
+  },
+  {
+    title: 'Process discipline',
+    text: 'Documented workflows with turnaround standards for every function we perform. Quality that depends on heroics is not quality.',
+  },
+  {
+    title: 'Transparency',
+    text: 'We work inside client systems where our output is verifiable, price from real numbers with the drivers explained, and write contracts you can exit.',
+  },
+  {
+    title: 'Practice-specific workflows',
+    text: 'A pain management practice and a pediatric clinic need different billing operations. We build to the specialty, not to a template.',
+  },
+  {
+    title: 'Texas market focus',
+    text: 'One state, known deeply: Medicaid MCO landscapes, TRICARE markets, DWC workers’ comp, and the payer patterns of every major Texas metro.',
+  },
+  {
+    title: 'Long-term relationships',
+    text: 'Our economics reward client retention through results — which is why we invest in reporting you can verify rather than exit barriers you cannot escape.',
+  },
+];
+---
+
+<BaseLayout
+  title="About Us | Texas Medical Billing Company"
+  description="About Texas Medical Billing Company: a Texas-focused medical billing firm built on process discipline, transparency, and verifiable reporting."
+  canonicalPath="/about/"
+  schema={[breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'About' }])]}
+>
+  <PageHero
+    eyebrow="About Us"
+    h1="A Billing Company Built to Be Verifiable"
+    lead="Texas Medical Billing Company provides medical billing and revenue cycle support for physicians and healthcare organizations across Texas — built on a simple premise: billing partners should be judged on evidence."
+    breadcrumbs={[{ name: 'About' }]}
+  />
+
+  <section class="section">
+    <div class="container-site prose-site max-w-3xl">
+      <h2>Who We Are</h2>
+      <p>
+        We are a new company, and we say so plainly — no invented founding decade, no fictional
+        client counts, no purchased testimonials. What we bring instead is a deliberate operating
+        model: specialty-aware billing workflows, secure remote delivery inside client-authorized
+        systems, and reporting discipline that lets practices verify our work in their own data.
+      </p>
+      <p>
+        Our focus is Texas healthcare — physicians, private practices, clinics, group practices,
+        and healthcare organizations across the state. That focus is strategic: Texas billing has
+        its own rulebooks (Texas Medicaid’s MCO structure, DWC workers’ compensation, the TRICARE
+        markets around the state’s military installations), and depth in one state serves clients
+        better than shallow coverage of fifty.
+      </p>
+
+      <h2>How We Work</h2>
+      <p>
+        Service delivery is secure and remote: our team operates within your existing practice
+        management system through role-based access under a signed Business Associate Agreement —
+        your data stays in your system, our work stays visible in your queues, and every action is
+        traceable in your audit logs. The model removes local staffing risk from your billing
+        without removing your visibility into it.
+      </p>
+      <p>
+        Engagements are scoped in writing, priced from your actual numbers, and reported monthly
+        with consistent KPI definitions. When we recommend a service, we show the data that
+        justifies it — and when the data says you don’t need us, the assessment says that too.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container-site">
+      <h2 class="h2">What We Stand On</h2>
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          values.map((value) => (
+            <div class="card">
+              <p class="font-semibold text-navy-900">{value.title}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">{value.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-site prose-site max-w-3xl">
+      <h2>Our Team</h2>
+      <p>
+        Team member profiles will be published here as our staff grows and individuals consent to
+        public profiles — we do not publish stock-photo “teams” or invented bios. What we will
+        always publish: who is accountable for your account, in writing, from day one of any
+        engagement.
+      </p>
+      <!-- Team-member cards intentionally hidden until real team information exists.
+           See src/content/authors/ and COMPLIANCE-REVIEW.md. -->
+
+      <h2>Editorial Standards</h2>
+      <p>
+        The educational content on this site follows a documented
+        <a href="/editorial-policy/">editorial policy</a>, a
+        <a href="/content-review-process/">content review process</a>, and a
+        <a href="/corrections-policy/">corrections policy</a>. Where content touches coding, payer
+        rules, or compliance topics, it is educational only — flagged for professional review and
+        never presented as definitive advice.
+      </p>
+    </div>
+  </section>
+
+  <CtaSection heading="Start with a conversation" ctaId="about_cta" />
+</BaseLayout>

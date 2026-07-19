@@ -1,0 +1,150 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import RelatedLinks from '../../components/RelatedLinks.astro';
+import { services } from '../../data';
+import { breadcrumbSchema, articleSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+import { DISCLAIMER } from '../../config/site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const path = `/blog/${post.id}/`;
+const data = post.data;
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+// Reading time from rendered body length (rough 220 wpm).
+const words = post.body?.split(/\s+/).length ?? 0;
+const readingMinutes = Math.max(1, Math.round(words / 220));
+
+const toc = headings.filter((h) => h.depth === 2);
+
+const allPosts = (await getCollection('blog'))
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf());
+const relatedPosts = [
+  ...allPosts.filter((p) => p.data.category === data.category),
+  ...allPosts.filter((p) => p.data.category !== data.category),
+]
+  .slice(0, 3)
+  .map((p) => ({ title: p.data.title, href: `/blog/${p.id}/`, description: p.data.summary.slice(0, 110) + '…', badge: 'Article' }));
+
+const serviceLinks = data.relatedServices
+  .map((slug) => services.find((s) => s.slug === slug))
+  .filter((s) => !!s)
+  .slice(0, 3)
+  .map((s) => ({ title: s.title, href: `/services/${s.slug}/`, badge: 'Service' }));
+
+const categoryLabels: Record<string, string> = {
+  'revenue-cycle': 'Revenue Cycle',
+  'practice-management': 'Practice Management',
+  'payer-news': 'Payer News',
+  'texas-healthcare': 'Texas Healthcare',
+};
+
+const schema = [
+  breadcrumbSchema([
+    { name: 'Home', url: canonicalUrl('/') },
+    { name: 'Blog', url: canonicalUrl('/blog/') },
+    { name: data.title },
+  ]),
+  articleSchema({
+    url: canonicalUrl(path),
+    headline: data.title,
+    description: data.metaDescription,
+    datePublished: data.publishedDate.toISOString(),
+    dateModified: (data.updatedDate ?? data.publishedDate).toISOString(),
+    isBlogPosting: true,
+  }),
+];
+---
+
+<BaseLayout
+  title={data.seoTitle}
+  description={data.metaDescription}
+  canonicalPath={path}
+  noindex={!data.indexable}
+  ogType="article"
+  schema={schema}
+  datePublished={data.publishedDate.toISOString()}
+  dateModified={(data.updatedDate ?? data.publishedDate).toISOString()}
+>
+  <PageHero
+    eyebrow={categoryLabels[data.category] ?? 'Blog'}
+    h1={data.title}
+    lead={data.summary}
+    breadcrumbs={[{ name: 'Blog', href: '/blog/' }, { name: data.title }]}
+  />
+
+  <section class="section">
+    <div class="container-site grid gap-12 lg:grid-cols-4">
+      <aside class="order-2 space-y-6 lg:order-1">
+        {
+          toc.length > 1 && (
+            <nav class="card sticky top-24" aria-label="Table of contents">
+              <p class="text-xs font-semibold uppercase tracking-widest text-slate-400">On this page</p>
+              <ul class="mt-3 space-y-2 text-sm">
+                {toc.map((h) => (
+                  <li>
+                    <a href={`#${h.slug}`} class="text-slate-600 hover:text-teal-700">{h.text}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )
+        }
+      </aside>
+
+      <div class="order-1 lg:order-2 lg:col-span-3">
+        <div class="mb-6 flex flex-wrap gap-x-6 gap-y-1 border-b border-slate-100 pb-4 text-xs text-slate-500">
+          <span>Published: {fmt(data.publishedDate)}</span>
+          {data.updatedDate && <span>Updated: {fmt(data.updatedDate)}</span>}
+          <span>{readingMinutes} min read</span>
+          <span>By: Texas Medical Billing Company Editorial</span>
+          <a
+            href={`/blog/category/${data.category}/`}
+            class="text-teal-700 underline"
+          >
+            {categoryLabels[data.category]}
+          </a>
+        </div>
+
+        <article class="prose-site">
+          <Content />
+        </article>
+
+        {
+          data.sources.length > 0 && (
+            <div class="mt-10 rounded-(--radius-card) border border-slate-200 bg-sand-50 p-6">
+              <h2 class="h3">Sources</h2>
+              <ul class="mt-3 space-y-1.5 text-sm">
+                {data.sources.map((source) => (
+                  <li>
+                    <a href={source.url} rel="noopener nofollow" target="_blank" class="text-teal-700 underline">
+                      {source.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        <p class="mt-8 text-xs leading-relaxed text-slate-500">{DISCLAIMER}</p>
+      </div>
+    </div>
+  </section>
+
+  <RelatedLinks heading="Keep Reading" links={[...relatedPosts, ...serviceLinks]} alt />
+
+  <CtaSection ctaId={`blog_${post.id}`} />
+</BaseLayout>

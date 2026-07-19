@@ -1,0 +1,41 @@
+---
+/**
+ * Accessible FAQ accordion using native <details>. Pair with faqSchema()
+ * in the page schema prop when FAQs should emit FAQPage JSON-LD.
+ */
+interface Props {
+  faqs: { question: string; answer: string }[];
+  heading?: string;
+  headingLevel?: 'h2' | 'h3';
+}
+const { faqs, heading = 'Frequently Asked Questions', headingLevel = 'h2' } = Astro.props;
+const Heading = headingLevel;
+---
+
+{
+  faqs.length > 0 && (
+    <section class="section">
+      <div class="container-site">
+        <Heading class="h2">{heading}</Heading>
+        <div class="mt-8 max-w-3xl divide-y divide-slate-200 rounded-(--radius-card) border border-slate-200 bg-white">
+          {faqs.map((faq) => (
+            <details class="group px-5 py-4">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-left font-semibold text-navy-900">
+                {faq.question}
+                <svg
+                  aria-hidden="true"
+                  class="h-4 w-4 shrink-0 text-teal-600 transition-transform group-open:rotate-180"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path fill-rule="evenodd" d="M5.22 7.22a.75.75 0 0 1 1.06 0L10 10.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 8.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                </svg>
+              </summary>
+              <p class="mt-3 text-sm leading-relaxed text-slate-600">{faq.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

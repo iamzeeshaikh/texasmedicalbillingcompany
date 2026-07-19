@@ -1,0 +1,49 @@
+---
+import Breadcrumbs from './Breadcrumbs.astro';
+import { CTAS } from '../config/site';
+
+interface Props {
+  eyebrow?: string;
+  h1: string;
+  lead?: string;
+  breadcrumbs?: { name: string; href?: string }[];
+  showCtas?: boolean;
+  variant?: 'light' | 'navy';
+}
+const { eyebrow, h1, lead, breadcrumbs, showCtas = false, variant = 'light' } = Astro.props;
+const isNavy = variant === 'navy';
+---
+
+<section class={isNavy ? 'section-navy' : 'bg-gradient-to-b from-navy-50/60 to-white'}>
+  <div class="container-site py-12 md:py-16">
+    {breadcrumbs && <div class="mb-6"><Breadcrumbs items={breadcrumbs} onDark={isNavy} /></div>}
+    {eyebrow && <p class={`eyebrow mb-3 ${isNavy ? 'text-teal-300' : ''}`}>{eyebrow}</p>}
+    <h1 class={`h1 max-w-4xl ${isNavy ? 'text-white' : ''}`}>{h1}</h1>
+    {
+      lead && (
+        <p class={`lead mt-5 max-w-3xl ${isNavy ? 'text-navy-200' : ''}`}>{lead}</p>
+      )
+    }
+    {
+      showCtas && (
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a
+            href={CTAS.primary.href}
+            class="btn-accent"
+            data-analytics="cta_click"
+            data-cta="hero_primary"
+          >
+            {CTAS.primary.label}
+          </a>
+          <a
+            href={CTAS.secondary.href}
+            class={isNavy ? 'btn-ghost-light' : 'btn-secondary'}
+          >
+            {CTAS.secondary.label}
+          </a>
+        </div>
+      )
+    }
+    <slot />
+  </div>
+</section>

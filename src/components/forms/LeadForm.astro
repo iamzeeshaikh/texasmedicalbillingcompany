@@ -1,0 +1,231 @@
+---
+/**
+ * Reusable lead form.
+ *
+ * Backend: posts JSON to PUBLIC_FORM_ENDPOINT (see ENVIRONMENT-VARIABLES.md).
+ * Until an endpoint is configured, submission shows a graceful error asking
+ * the visitor to email instead — connect a backend BEFORE launch.
+ *
+ * Safeguards: honeypot field, consent checkbox, PHI warning, client-side
+ * validation, accessible labels, success/error states, analytics hooks.
+ * Never collect patient information or PHI in these forms.
+ */
+import { PHI_WARNING, CONTACT } from '../../config/site';
+
+type FieldType = 'text' | 'email' | 'tel' | 'select' | 'textarea';
+export interface FormField {
+  name: string;
+  label: string;
+  type: FieldType;
+  required?: boolean;
+  options?: string[];
+  placeholder?: string;
+  hint?: string;
+}
+
+interface Props {
+  formId: string;
+  heading?: string;
+  fields: FormField[];
+  submitLabel?: string;
+  successMessage?: string;
+}
+
+const {
+  formId,
+  heading,
+  fields,
+  submitLabel = 'Submit Request',
+  successMessage = 'Thank you — your request has been received. Our team will reply within one business day.',
+} = Astro.props;
+---
+
+<div class="card">
+  {heading && <h2 class="h3 mb-5">{heading}</h2>}
+
+  <div class="alert-warning mb-5 text-xs" role="note">
+    <strong>Important:</strong> {PHI_WARNING}
+  </div>
+
+  <form data-lead-form data-form={formId} novalidate>
+    <input type="hidden" name="form_id" value={formId} />
+    <!-- Honeypot: hidden from humans, bots fill it in -->
+    <div class="absolute -left-[9999px]" aria-hidden="true">
+      <label for={`${formId}-company-website`}>Leave this field empty</label>
+      <input
+        type="text"
+        id={`${formId}-company-website`}
+        name="company_website"
+        tabindex="-1"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      {
+        fields.map((field) => {
+          const id = `${formId}-${field.name}`;
+          const wide = field.type === 'textarea' || field.type === 'select';
+          return (
+            <div class={wide ? 'sm:col-span-2' : ''}>
+              <label class="form-label" for={id}>
+                {field.label}
+                {field.required && <span class="text-red-600" aria-hidden="true"> *</span>}
+              </label>
+              {field.type === 'textarea' ? (
+                <textarea
+                  id={id}
+                  name={field.name}
+                  rows="4"
+                  class="form-input"
+                  required={field.required}
+                  placeholder={field.placeholder}
+                />
+              ) : field.type === 'select' ? (
+                <select id={id} name={field.name} class="form-input" required={field.required}>
+                  <option value="">Please select…</option>
+                  {field.options?.map((opt) => (
+                    <option value={opt}>{opt}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type={field.type}
+                  id={id}
+                  name={field.name}
+                  class="form-input"
+                  required={field.required}
+                  placeholder={field.placeholder}
+                  autocomplete={
+                    field.type === 'email' ? 'email' : field.type === 'tel' ? 'tel' : undefined
+                  }
+                />
+              )}
+              {field.hint && <p class="form-hint">{field.hint}</p>}
+              <p class="form-error hidden" data-error-for={field.name} />
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <!-- Spam protection integration placeholder:
+         add reCAPTCHA/Turnstile widget here when keys are configured. -->
+
+    <div class="mt-5 flex items-start gap-2.5">
+      <input
+        type="checkbox"
+        id={`${formId}-consent`}
+        name="consent"
+        required
+        class="mt-0.5 h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-600"
+      />
+      <label for={`${formId}-consent`} class="text-xs leading-relaxed text-slate-600">
+        I agree to be contacted about my inquiry and have read the
+        <a href="/privacy-policy/" class="text-teal-700 underline">Privacy Policy</a>. This form is
+        for business inquiries only. <span class="text-red-600" aria-hidden="true">*</span>
+      </label>
+    </div>
+    <p class="form-error hidden" data-error-for="consent"></p>
+
+    <button
+      type="submit"
+      class="btn-primary mt-6 w-full sm:w-auto"
+      data-analytics="form_submit"
+      data-form={formId}
+    >
+      {submitLabel}
+    </button>
+
+    <p class="alert-success mt-4 hidden" data-form-success role="status">{successMessage}</p>
+    <p class="alert-warning mt-4 hidden" data-form-error role="alert">
+      Something went wrong sending your request. Please email us directly at{' '}
+      <a href={`mailto:${CONTACT.email}`} class="font-semibold underline">{CONTACT.email}</a>.
+    </p>
+  </form>
+</div>
+
+<script>
+  // Our own server route (src/pages/api/contact.ts), which sends over SMTP.
+  // PUBLIC_FORM_ENDPOINT still overrides it if a third-party form service is
+  // ever preferred, but the built-in endpoint is the default so forms work
+  // with no extra configuration beyond the SMTP_* variables.
+  // Trailing slash is required: the site sets trailingSlash: 'always', so
+  // '/api/contact' (no slash) 404s instead of reaching the route.
+  const ENDPOINT = import.meta.env.PUBLIC_FORM_ENDPOINT || '/api/contact/';
+
+  document.querySelectorAll<HTMLFormElement>('[data-lead-form]').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const success = form.querySelector<HTMLElement>('[data-form-success]');
+      const error = form.querySelector<HTMLElement>('[data-form-error]');
+      success?.classList.add('hidden');
+      error?.classList.add('hidden');
+
+      // Client-side validation
+      let valid = true;
+      form.querySelectorAll<HTMLElement>('[data-error-for]').forEach((el) => {
+        el.classList.add('hidden');
+        el.textContent = '';
+      });
+      form
+        .querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+          'input[required], select[required], textarea[required]',
+        )
+        .forEach((field) => {
+          const errEl = form.querySelector<HTMLElement>(`[data-error-for="${field.name}"]`);
+          if (field.type === 'checkbox' && !(field as HTMLInputElement).checked) {
+            valid = false;
+            if (errEl) {
+              errEl.textContent = 'Please confirm consent to be contacted.';
+              errEl.classList.remove('hidden');
+            }
+          } else if (!field.value.trim()) {
+            valid = false;
+            if (errEl) {
+              errEl.textContent = 'This field is required.';
+              errEl.classList.remove('hidden');
+            }
+          } else if (
+            field.type === 'email' &&
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value.trim())
+          ) {
+            valid = false;
+            if (errEl) {
+              errEl.textContent = 'Please enter a valid email address.';
+              errEl.classList.remove('hidden');
+            }
+          }
+        });
+      if (!valid) return;
+
+      // Honeypot: silently drop bot submissions
+      const honeypot = form.querySelector<HTMLInputElement>('input[name="company_website"]');
+      if (honeypot?.value) {
+        success?.classList.remove('hidden');
+        form.reset();
+        return;
+      }
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      delete (data as Record<string, unknown>).company_website;
+
+      try {
+        const res = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        success?.classList.remove('hidden');
+        form.reset();
+        const w = window as typeof window & { gtag?: (...args: unknown[]) => void };
+        w.gtag?.('event', 'form_success', { form_id: form.dataset.form });
+        // CRM integration placeholder: forward `data` to CRM webhook here.
+        window.location.href = '/thank-you/';
+      } catch {
+        error?.classList.remove('hidden');
+      }
+    });
+  });
+</script>

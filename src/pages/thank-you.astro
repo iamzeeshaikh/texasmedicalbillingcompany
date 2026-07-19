@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CTAS } from '../config/site';
+---
+
+<BaseLayout
+  title="Thank You | Texas Medical Billing Company"
+  description="Your request has been received. We respond to business inquiries within one business day."
+  canonicalPath="/thank-you/"
+  noindex
+>
+  <section class="section">
+    <div class="container-narrow py-16 text-center">
+      <p class="eyebrow">Request received</p>
+      <h1 class="h1 mt-3">Thank You</h1>
+      <p class="lead mx-auto mt-6 max-w-xl">
+        Your request is in — a member of our team will reply within one business day. If anything is
+        time-sensitive, say so when we reach out and we will move accordingly.
+      </p>
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        <a href="/guides/" class="btn-secondary">Browse the Knowledge Center</a>
+        <a href="/" class="btn-primary">Back to Home</a>
+      </div>
+      <p class="mt-10 text-sm text-slate-500">
+        While you wait: <a href={CTAS.primary.href} class="text-teal-700 underline">the free billing assessment</a>
+        {' '}is the fastest path from conversation to measured findings.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

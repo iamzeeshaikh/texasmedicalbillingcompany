@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaSection from '../../components/CtaSection.astro';
+import { software } from '../../data';
+import { breadcrumbSchema, itemListSchema } from '../../lib/schema';
+import { canonicalUrl } from '../../lib/url';
+import { SOFTWARE_DISCLAIMER } from '../../config/site';
+
+const sorted = [...software].sort((a, b) => a.platformName.localeCompare(b.platformName));
+
+const schema = [
+  breadcrumbSchema([{ name: 'Home', url: canonicalUrl('/') }, { name: 'Software' }]),
+  itemListSchema(sorted.map((s) => ({ name: s.h1, url: canonicalUrl(`/software/${s.slug}/`) }))),
+];
+---
+
+<BaseLayout
+  title="Practice Software We Work In | Billing Platform Support"
+  description="We bill inside your existing system: athenahealth, AdvancedMD, eClinicalWorks, Epic, Tebra, and 15+ more platforms — no migration required."
+  canonicalPath="/software/"
+  schema={schema}
+>
+  <PageHero
+    eyebrow="Software Support"
+    h1="We Work Inside Your Practice Software"
+    lead="No forced migrations, no data hostage situations: our team operates within client-authorized systems — your platform, your data, our billing discipline."
+    breadcrumbs={[{ name: 'Software' }]}
+    showCtas
+  />
+
+  <section class="border-b border-slate-100 bg-sand-50 py-4">
+    <div class="container-site">
+      <p class="text-xs leading-relaxed text-slate-600">
+        <strong>Independence disclosure:</strong> {SOFTWARE_DISCLAIMER.replace('this software vendor', 'any software vendor listed here')}
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-site">
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          sorted.map((platform) => (
+            <a href={`/software/${platform.slug}/`} class="card-link">
+              <p class="font-semibold text-navy-900">{platform.platformName}</p>
+              <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                {platform.summary.length > 130 ? platform.summary.slice(0, 130) + '…' : platform.summary}
+              </p>
+              <p class="mt-3 text-sm font-semibold text-teal-700">View platform support →</p>
+            </a>
+          ))
+        }
+      </div>
+      <div class="prose-site mt-12 max-w-3xl">
+        <h2>Your platform not listed?</h2>
+        <p>
+          These pages cover the platforms we encounter most; our team works across many more,
+          subject to each platform’s access and licensing requirements.{' '}
+          <a href="/contact/">Ask us about yours</a> — the honest answer costs nothing.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaSection heading="Keep your software. Upgrade your billing." ctaId="software_hub" />
+</BaseLayout>
