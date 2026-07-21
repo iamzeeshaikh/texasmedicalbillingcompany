@@ -136,11 +136,15 @@ for (const file of files) {
   }
 }
 
-// Sitemap consistency: noindex pages must not be listed
-const sitemapIndex = join(DIST, 'sitemap-index.xml');
-if (existsSync(sitemapIndex)) {
+// Sitemap consistency: noindex pages must not be listed. Read whichever
+// layout the build produced — the flattened single sitemap.xml (see the
+// flatten-sitemap integration in astro.config.mjs), or the plugin's default
+// sitemap-index.xml + numbered chunks if the site ever splits into several.
+const smFiles = readdirSync(DIST).filter(
+  (f) => f === 'sitemap.xml' || /^sitemap-\d+\.xml$/.test(f),
+);
+if (smFiles.length > 0) {
   let sitemapUrls = [];
-  const smFiles = readdirSync(DIST).filter((f) => /^sitemap-\d+\.xml$/.test(f));
   for (const sm of smFiles) {
     const xml = readFileSync(join(DIST, sm), 'utf8');
     sitemapUrls.push(...[...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]));
@@ -152,7 +156,7 @@ if (existsSync(sitemapIndex)) {
   }
   console.log(`Sitemap URLs: ${sitemapUrls.length}`);
 } else {
-  errors.push('sitemap-index.xml missing from dist');
+  errors.push('no sitemap found in dist');
 }
 
 console.log(`\nChecked ${files.length} pages.`);
